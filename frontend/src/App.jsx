@@ -1,89 +1,14 @@
-import { useState } from 'react'
-import './App.css'
+import { useEffect, useState } from 'react'
+import Navbar from './components/Navbar.jsx'
+import profileImage from './assets/ako.png'
 
-const projects = [
-  { number: '01', title: 'SaaS analytics', type: 'Product design · Development', color: 'violet' },
-  { number: '02', title: 'Orion finance', type: 'Brand identity · Web design', color: 'blue' },
-  { number: '03', title: 'Cedar House', type: 'Digital experience · Commerce', color: 'orange' },
-]
+const PinIcon = () => <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2" /></svg>
+const CheckIcon = () => <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m5 12 4 4L19 6" /></svg>
+const DownloadIcon = () => <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16" /></svg>
 
-function Arrow() {
-  return <span aria-hidden="true">↗</span>
+function HeroArt() { return <div className="mx-auto h-[340px] w-full max-w-[390px] overflow-hidden rounded-[36px] bg-zinc-900"><img src={profileImage} alt="Jay Comendador" className="h-full w-full object-cover object-center" /></div> }
+
+export default function App() {
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('jay-theme') === 'dark'); useEffect(() => localStorage.setItem('jay-theme', darkMode ? 'dark' : 'light'), [darkMode])
+  return <main className={`min-h-screen ${darkMode ? 'bg-[#171716] text-zinc-100' : 'bg-white text-zinc-950'}`}><Navbar darkMode={darkMode} onToggleTheme={() => setDarkMode(!darkMode)} /><section className="mx-auto grid min-h-[calc(100vh-64px)] w-[min(100%-42px,990px)] grid-cols-1 items-center gap-8 py-10 lg:grid-cols-[47%_53%] lg:py-6"><div className="max-w-[410px]"><span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] ${darkMode ? 'bg-zinc-800' : 'bg-zinc-100'}`}><i className="h-1.5 w-1.5 rounded-full bg-green-500" />Available for freelance work</span><h1 className="mt-6 text-5xl font-extrabold leading-[.98] tracking-[-.065em] sm:text-6xl">Hi, I&apos;m Jay<br />Comendador</h1><h2 className="mt-4 font-serif text-3xl font-bold">Frontend Developer<span className="font-sans font-normal">|</span></h2><p className={`mt-3 text-xs leading-relaxed ${darkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>I create beautiful, functional, and user-centered digital experiences. 4th Year College in Northwest Samar State University, I bring ideas to life through clean code and thoughtful design.</p><div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[10px]"><span className="flex items-center gap-1"><PinIcon />Based in Samar, Calbayog City</span><span className="flex items-center gap-1"><CheckIcon />Available Now</span></div><div className="mt-4 flex gap-2"><a href="/contact" className={`rounded-md px-3 py-2 text-[10px] ${darkMode ? 'bg-white text-black' : 'bg-black text-white'}`}>Hire Me</a><a href="/contact" className="flex items-center gap-1 rounded-md border border-current px-3 py-2 text-[10px]">Download CV <DownloadIcon /></a></div></div><HeroArt /></section><section id="about" /><section id="projects" /><section id="services" /></main>
 }
-
-function App() {
-  const [menuOpen, setMenuOpen] = useState(false)
-
-  return (
-    <main>
-      <nav className="nav container" aria-label="Main navigation">
-        <a className="brand" href="#home" aria-label="Avery Morgan home">AM<span>®</span></a>
-        <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen}>
-          {menuOpen ? 'Close' : 'Menu'}
-        </button>
-        <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
-          <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
-          <a href="#work" onClick={() => setMenuOpen(false)}>Selected work</a>
-          <a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
-        </div>
-        <a className="availability" href="mailto:hello@averymorgan.design"><i /> Available for select projects</a>
-      </nav>
-
-      <section className="hero-section container" id="home">
-        <p className="eyebrow"><span>✦</span> Independent designer & developer</p>
-        <div className="hero-copy">
-          <h1>Designing digital<br /><em>experiences</em> with intent.</h1>
-          <div className="intro">
-            <p>I’m Avery, an independent designer and developer helping thoughtful brands make a meaningful impression.</p>
-            <a className="text-link" href="#work">Explore my work <Arrow /></a>
-          </div>
-        </div>
-        <div className="hero-footer">
-          <p>Based in Phoenix, AZ<br />Working worldwide</p>
-          <a className="scroll" href="#about">Scroll to discover <b>↓</b></a>
-        </div>
-      </section>
-
-      <section className="statement" id="about">
-        <div className="container statement-grid">
-          <p className="section-label">01 — About</p>
-          <div>
-            <h2>Strategy, design, and code — brought together to make brands feel <em>unmistakable.</em></h2>
-            <div className="capabilities">
-              <span>Creative direction</span><span>Digital products</span><span>Web development</span><span>Brand systems</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="work container" id="work">
-        <div className="section-heading">
-          <div><p className="section-label">02 — Selected work</p><h2>A few things I’m proud of.</h2></div>
-          <a className="text-link" href="mailto:hello@averymorgan.design">Start a project <Arrow /></a>
-        </div>
-        <div className="projects">
-          {projects.map((project) => (
-            <article className="project" key={project.number}>
-              <div className={`project-visual ${project.color}`}>
-                <span className="project-mark">{project.number}</span>
-                <span className="visual-shape" />
-              </div>
-              <div className="project-info"><h3>{project.title}</h3><p>{project.type}</p><a href="#contact" aria-label={`View ${project.title}`}><Arrow /></a></div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="contact" id="contact">
-        <div className="container contact-inner">
-          <p className="section-label">03 — Contact</p>
-          <div><p className="eyebrow"><span>✦</span> Have a project in mind?</p><h2>Let’s make something<br /><em>memorable.</em></h2><a className="contact-button" href="mailto:hello@averymorgan.design">hello@averymorgan.design <Arrow /></a></div>
-        </div>
-      </section>
-
-      <footer className="footer container"><span>© 2026 Avery Morgan</span><span>Built with care, in the desert.</span><div><a href="#home">LinkedIn</a><a href="#home">Instagram</a></div></footer>
-    </main>
-  )
-}
-
-export default App
