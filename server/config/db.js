@@ -5,7 +5,8 @@ async function connectDatabase() {
   const { MONGODB_URI } = process.env;
 
   if (!MONGODB_URI) {
-    throw new Error('MONGODB_URI is not configured. Add it to server/.env.');
+    console.warn('⚠️  MONGODB_URI is not configured in server/.env.');
+    return false;
   }
 
   // Atlas connection strings use DNS SRV records. Some local/ISP DNS servers
@@ -15,28 +16,27 @@ async function connectDatabase() {
       .split(',')
       .map((server) => server.trim())
       .filter(Boolean);
-    dns.setServers(dnsServers);
+    try {
+      dns.setServers(dnsServers);
+    } catch (dnsErr) {
+      console.warn(`⚠️  Failed to set custom DNS servers: ${dnsErr.message}`);
+    }
   }
 
   mongoose.set('strictQuery', true);
 
   try {
     await mongoose.connect(MONGODB_URI, {
-      serverSelectionTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 5000,
+      tlsAllowInvalidCertificates: true,
     });
+    console.log(`✅ Connected to MongoDB: ${mongoose.connection.host}`);
+    return true;
   } catch (error) {
-    if (error.code === 'ECONNREFUSED' || /querySrv/i.test(error.message)) {
-      error.message = `MongoDB Atlas DNS lookup failed. Check your internet/DNS connection or set MONGODB_DNS_SERVERS in server/.env. Original error: ${error.message}`;
-    }
-    const serverErrors = error.reason?.servers
-      ? [...error.reason.servers.values()].map((server) => server.error?.message).filter(Boolean)
-      : [];
-    if (serverErrors.length) {
-      error.message += ` Node details: ${serverErrors.join(' | ')}`;
-    }
-    throw error;
+    console.warn(`⚠️  MongoDB Connection Warning: ${error.message}`);
+    console.warn('ℹ️  Server will continue running. Update MONGODB_URI in server/.env to resolve database connectivity.');
+    return false;
   }
-  console.log(`Connected to MongoDB: ${mongoose.connection.host}`);
 }
 
 module.exports = connectDatabase;

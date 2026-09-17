@@ -1,0 +1,21 @@
+import { useState } from 'react';
+import { ArrowLeft, LockKeyhole, LogOut, Save, Settings2, UserRound } from 'lucide-react';
+import { loadPortfolioContent, savePortfolioContent } from './portfolioContent';
+
+const dashboardAccount = { username: 'jayadmin', password: 'JayPortfolio!2026' };
+
+export default function Dashboard() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const [signedIn, setSignedIn] = useState(() => sessionStorage.getItem('portfolio-dashboard') === 'signed-in');
+  const [content, setContent] = useState(loadPortfolioContent);
+  const [editing, setEditing] = useState(false);
+  const signOut = () => { sessionStorage.removeItem('portfolio-dashboard'); setSignedIn(false); setPassword(''); };
+  const updateContent = (event) => setContent((current) => ({ ...current, [event.target.name]: event.target.value }));
+  function signIn(event) { event.preventDefault(); if (username === dashboardAccount.username && password === dashboardAccount.password) { sessionStorage.setItem('portfolio-dashboard', 'signed-in'); setSignedIn(true); setMessage(''); } else setMessage('Incorrect username or password.'); }
+  function saveContent(event) { event.preventDefault(); savePortfolioContent(content); setMessage('Changes saved. Open your portfolio to see them.'); }
+
+  if (signedIn) return <main className="dashboard-page"><section className="dashboard-login-card dashboard-home"><div className="dashboard-home-top"><div className="dashboard-icon"><Settings2 size={27} /></div><button className="dashboard-signout" onClick={signOut}><LogOut size={15} /> Sign out</button></div><p className="dashboard-kicker">PORTFOLIO ADMIN</p><h1>{editing ? 'Edit portfolio' : 'Dashboard ready'}</h1>{editing ? <form className="dashboard-editor" onSubmit={saveContent}><label>First name<input name="name" value={content.name} onChange={updateContent} required /></label><label>Full name<input name="fullName" value={content.fullName} onChange={updateContent} required /></label><label>Role<input name="role" value={content.role} onChange={updateContent} required /></label><label>Experience<input name="experience" value={content.experience} onChange={updateContent} required /></label><label>Projects count<input name="projects" value={content.projects} onChange={updateContent} required /></label><label>Clients count<input name="clients" value={content.clients} onChange={updateContent} required /></label><label className="dashboard-wide">Hero introduction<textarea name="intro" value={content.intro} onChange={updateContent} rows="3" required /></label><label className="dashboard-wide">About Me<textarea name="about" value={content.about} onChange={updateContent} rows="6" required /></label><button type="submit"><Save size={15} /> Save changes</button></form> : <><p className="dashboard-copy">You are signed in as <strong>{dashboardAccount.username}</strong>. Edit the information shown on your public portfolio.</p><button className="dashboard-return" onClick={() => setEditing(true)}><Settings2 size={15} /> Edit portfolio</button></>}{message && <p className="dashboard-message dashboard-success">{message}</p>}<a className="dashboard-back dashboard-bottom-link" href="/"><ArrowLeft size={16} /> View portfolio</a></section></main>;
+  return <main className="dashboard-page"><section className="dashboard-login-card"><a className="dashboard-back" href="/"><ArrowLeft size={16} /> Back to portfolio</a><div className="dashboard-icon"><UserRound size={27} /></div><p className="dashboard-kicker">PORTFOLIO ADMIN</p><h1>Welcome back</h1><p className="dashboard-copy">Sign in to manage your portfolio information.</p><form className="dashboard-form" onSubmit={signIn}><label>Username<input value={username} onChange={(event) => setUsername(event.target.value)} placeholder="Enter your username" autoComplete="username" required /></label><label>Password<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Enter your password" required /></label><button type="submit"><LockKeyhole size={15} /> Sign in</button></form>{message && <p className="dashboard-message">{message}</p>}</section></main>;
+}

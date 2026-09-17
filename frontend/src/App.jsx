@@ -1,14 +1,98 @@
-import { useEffect, useState } from 'react'
-import Navbar from './components/Navbar.jsx'
-import profileImage from './assets/ako.png'
+import { useEffect, useState } from 'react';
+import { ArrowRight, ChevronRight, Code2, LayoutDashboard, Loader2, Menu, Moon, Palette, Paperclip, Send, Sun, X } from 'lucide-react';
+import profileImage from './assets/ako.png';
+import alertoCalbayogImage from './assets/alertocalbayog.png';
+import ayskeopiImage from './assets/ayeskeopi.png';
+import crmsImage from './assets/CMRS.png';
+import fpopClinicImage from './assets/fpopclinic.png';
+import { loadPortfolioContent } from './dashboard/portfolioContent';
 
-const PinIcon = () => <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2" /></svg>
-const CheckIcon = () => <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m5 12 4 4L19 6" /></svg>
-const DownloadIcon = () => <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16" /></svg>
-
-function HeroArt() { return <div className="mx-auto h-[340px] w-full max-w-[390px] overflow-hidden rounded-[36px] bg-zinc-900"><img src={profileImage} alt="Jay Comendador" className="h-full w-full object-cover object-center" /></div> }
+const GitHubIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.5a10.5 10.5 0 0 0-3.32 20.46c.52.1.72-.22.72-.5v-1.96c-2.93.64-3.55-1.24-3.55-1.24-.48-1.22-1.17-1.55-1.17-1.55-.96-.65.07-.64.07-.64 1.06.08 1.62 1.09 1.62 1.09.94 1.61 2.47 1.14 3.07.87.1-.68.37-1.14.67-1.4-2.34-.27-4.8-1.17-4.8-5.2 0-1.15.41-2.09 1.08-2.83-.11-.27-.47-1.34.1-2.8 0 0 .88-.28 2.89 1.08A10 10 0 0 1 12 8.14c.9 0 1.8.12 2.64.36 2.01-1.36 2.89-1.08 2.89-1.08.57 1.46.21 2.53.1 2.8.67.74 1.08 1.68 1.08 2.83 0 4.04-2.47 4.92-4.82 5.18.38.33.72.97.72 1.96v2.9c0 .28.19.61.73.5A10.5 10.5 0 0 0 12 1.5Z" /></svg>;
+const FacebookIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.87.24-1.46 1.5-1.46h1.6V3.96c-.28-.04-1.22-.12-2.32-.12-2.3 0-3.88 1.4-3.88 3.98V10H7.8v3h2.6v8h3.1Z" /></svg>;
+const InstagramIcon = () => <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5" stroke="currentColor" strokeWidth="2" /><circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" /><circle cx="17.3" cy="6.8" r="1.1" fill="currentColor" /></svg>;
 
 export default function App() {
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('jay-theme') === 'dark'); useEffect(() => localStorage.setItem('jay-theme', darkMode ? 'dark' : 'light'), [darkMode])
-  return <main className={`min-h-screen ${darkMode ? 'bg-[#171716] text-zinc-100' : 'bg-white text-zinc-950'}`}><Navbar darkMode={darkMode} onToggleTheme={() => setDarkMode(!darkMode)} /><section className="mx-auto grid min-h-[calc(100vh-64px)] w-[min(100%-42px,990px)] grid-cols-1 items-center gap-8 py-10 lg:grid-cols-[47%_53%] lg:py-6"><div className="max-w-[410px]"><span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] ${darkMode ? 'bg-zinc-800' : 'bg-zinc-100'}`}><i className="h-1.5 w-1.5 rounded-full bg-green-500" />Available for freelance work</span><h1 className="mt-6 text-5xl font-extrabold leading-[.98] tracking-[-.065em] sm:text-6xl">Hi, I&apos;m Jay<br />Comendador</h1><h2 className="mt-4 font-serif text-3xl font-bold">Frontend Developer<span className="font-sans font-normal">|</span></h2><p className={`mt-3 text-xs leading-relaxed ${darkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>I create beautiful, functional, and user-centered digital experiences. 4th Year College in Northwest Samar State University, I bring ideas to life through clean code and thoughtful design.</p><div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[10px]"><span className="flex items-center gap-1"><PinIcon />Based in Samar, Calbayog City</span><span className="flex items-center gap-1"><CheckIcon />Available Now</span></div><div className="mt-4 flex gap-2"><a href="/contact" className={`rounded-md px-3 py-2 text-[10px] ${darkMode ? 'bg-white text-black' : 'bg-black text-white'}`}>Hire Me</a><a href="/contact" className="flex items-center gap-1 rounded-md border border-current px-3 py-2 text-[10px]">Download CV <DownloadIcon /></a></div></div><HeroArt /></section><section id="about" /><section id="projects" /><section id="services" /></main>
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [contactData, setContactData] = useState({ name: '', email: '', message: '', attachment: null });
+  const [contactStatus, setContactStatus] = useState(null);
+  const [sending, setSending] = useState(false);
+  const [typedLength, setTypedLength] = useState(0);
+  const [portfolioContent] = useState(loadPortfolioContent);
+  const codeSample = `const developer = {\n  name: '${portfolioContent.fullName}',\n  experience: '${portfolioContent.experience}',\n  projects: '${portfolioContent.projects}',\n  clients: '${portfolioContent.clients}'\n};`;
+  useEffect(() => {
+    const animatedItems = document.querySelectorAll('[data-scroll-animation]');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => entry.target.classList.toggle('is-visible', entry.isIntersecting));
+    }, { threshold: 0.18 });
+    animatedItems.forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    const delay = typedLength < codeSample.length ? 32 : 1800;
+    const timer = window.setTimeout(() => setTypedLength((length) => length < codeSample.length ? length + 1 : 0), delay);
+    return () => window.clearTimeout(timer);
+  }, [typedLength, codeSample]);
+  const links = [['Home', '#home'], ['About', '#about'], ['Skills', '#skills'], ['Projects', '#works'], ['Contact', '#contact']];
+  const skills = [{ name: 'Java', icon: 'https://cdn.simpleicons.org/openjdk/ed9b63', tone: 'yellow', level: 25 }, { name: 'Python', icon: 'https://cdn.simpleicons.org/python/96c9df', tone: 'sky', level: 20 }, { name: 'HTML', icon: 'https://cdn.simpleicons.org/html5/ed9b63', tone: 'orange', level: 80 }, { name: 'CSS', icon: 'https://cdn.simpleicons.org/css/81d9e9', tone: 'cyan', level: 80 }, { name: 'PHP', icon: 'https://cdn.simpleicons.org/php/bb93df', tone: 'purple', level: 30 }, { name: 'SQL', icon: 'https://cdn.simpleicons.org/mysql/79b99e', tone: 'green', level: 85 }, { name: 'Tailwind CSS', icon: 'https://cdn.simpleicons.org/tailwindcss/96c9df', tone: 'sky', level: 50 }, { name: 'JavaScript', icon: 'https://cdn.simpleicons.org/javascript/e5dc83', tone: 'yellow', level: 20 }, { name: 'MongoDB', icon: 'https://cdn.simpleicons.org/mongodb/79b99e', tone: 'green', level: 75 }, { name: 'React', icon: 'https://cdn.simpleicons.org/react/81d9e9', tone: 'cyan', level: 50 }];
+  const projects = [{ name: 'AlertoCalbayog', description: 'An emergency-response system providing real-time alerts and safety information to keep the community informed and prepared.', url: 'https://alertocalbayog.com', image: alertoCalbayogImage }, { name: 'Ayskeopi', description: 'An ice coffee ordering system that lets customers browse selections and enjoy a convenient coffee experience.', image: ayskeopiImage }, { name: 'CRMS', description: 'A room-maintenance system for viewing room availability and managing faculty, instructor, and room information.', image: crmsImage }, { name: 'FPOP-HealthHub', description: 'A full-stack web application for FPOP clinics that digitizes appointments, staff operations, inventory, and patient records.', url: 'https://fpopclinic.com', image: fpopClinicImage }];
+  const updateContact = (event) => setContactData((current) => ({ ...current, [event.target.name]: event.target.value }));
+  const chooseAttachment = (event) => {
+    const file = event.target.files?.[0] || null;
+    if (file && file.size > 5 * 1024 * 1024) {
+      setContactStatus({ type: 'error', text: 'Please choose a file smaller than 5 MB.' });
+      event.target.value = '';
+      return;
+    }
+    setContactStatus(null);
+    setContactData((current) => ({ ...current, attachment: file }));
+  };
+  const sendContact = async (event) => {
+    event.preventDefault();
+    setSending(true);
+    setContactStatus(null);
+    try {
+      const attachment = contactData.attachment ? await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({ filename: contactData.attachment.name, contentType: contactData.attachment.type, content: String(reader.result).split(',')[1] });
+        reader.onerror = reject;
+        reader.readAsDataURL(contactData.attachment);
+      }) : null;
+      const response = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...contactData, attachment }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Unable to send your message.');
+      setContactStatus({ type: 'success', text: result.message });
+      setContactData({ name: '', email: '', message: '', attachment: null });
+      event.target.reset();
+    } catch (error) {
+      setContactStatus({ type: 'error', text: error.message || 'Unable to send your message.' });
+    } finally {
+      setSending(false);
+    }
+  };
+  return (
+    <main className={darkMode ? 'portfolio-page dark-mode' : 'portfolio-page'}>
+      <section className="hero-section" id="home">
+        <header className="site-header shell">
+          <a className="brand" href="#home"><Code2 size={16} /> <span>Portfolio</span></a>
+          <nav className={menuOpen ? 'nav-links open' : 'nav-links'}>{links.map(([label, href]) => <a onClick={() => setMenuOpen(false)} href={href} key={label}>{label}</a>)}</nav>
+          <div className="social-links"><a href="#contact">f</a><a href="#contact">in</a><a href="#contact">◎</a></div>
+          <button className="theme-button" onClick={() => setDarkMode(!darkMode)} aria-label="Toggle dark mode">{darkMode ? <Sun size={15} /> : <Moon size={15} />}</button>
+          <button className="menu-button" aria-label="Toggle menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
+        </header>
+        <div className="hero shell">
+          <div className="hero-copy"><p className="eyebrow">PORTFOLIO — 2026</p><h1>Hello I'm <span>{portfolioContent.name}</span></h1><h2>{portfolioContent.role}</h2><p className="intro">{portfolioContent.intro}</p><div className="intro-social-links" aria-label="Social media links"><a href="https://github.com/jaycomendador" target="_blank" rel="noreferrer" aria-label="GitHub"><GitHubIcon /></a><a href="https://www.facebook.com/jay.comendador.92" target="_blank" rel="noreferrer" aria-label="Facebook"><FacebookIcon /></a><a href="https://www.instagram.com/mr_yajz/?hl=en" target="_blank" rel="noreferrer" aria-label="Instagram"><InstagramIcon /></a></div><div className="hero-actions"><a className="button primary" href="#works">View Projects <ArrowRight size={14} /></a><a className="button secondary" href="#contact">Contact Me</a></div></div>
+          <aside className="code-card" aria-label="Developer code sample"><div className="code-card-top"><span><i /> <i /> <i /></span><b>developer.js</b></div><code className="typing-code">{codeSample.slice(0, typedLength)}<span className="typing-cursor" aria-hidden="true" /></code></aside>
+          <div className="hero-art" aria-label="Portrait of Jay Comendador"><div className="orb orb-one" /><div className="orb orb-two" /><img className="hero-portrait" src={profileImage} alt="Jay Comendador" /></div>
+        </div>
+      </section>
+      <section className="about-section" id="about"><div className="shell about-grid"><div className="standing-figure" data-scroll-animation><div className="sf-head" /><div className="sf-body" /><div className="sf-leg one" /><div className="sf-leg two" /></div><article className="about-card" data-scroll-animation><p className="eyebrow">GET TO KNOW ME</p><h2>About Me</h2><p>{portfolioContent.about}</p><a href="#contact" className="button outline">Learn More <ChevronRight size={14} /></a></article></div></section>
+      <section className="skills-section" id="skills"><div className="shell"><div className="section-title"><p className="eyebrow">MY TOOLKIT</p><h2>My Tech Stack</h2><span>Technologies I specialize in</span></div><div className="skills-grid">{skills.map(({ name, icon, tone, level }) => <div className={'skill-card ' + tone} data-scroll-animation key={name}><img className="skill-icon" src={icon} alt="" /><strong>{name}</strong><div className="skill-level"><span style={{ width: `${level}%` }} /></div><small>{level}%</small></div>)}</div></div></section>
+      <section className="content-section" id="works"><div className="shell"><div className="section-title left"><p className="eyebrow">SELECTED WORK</p><h2>Recent Projects</h2></div><div className="work-grid">{projects.map((project, i) => <article className="work-card" data-scroll-animation key={project.name}><div className={'work-preview preview-' + i}>{project.image ? <img src={project.image} alt={`${project.name} website preview`} /> : <Palette size={28} />}</div><p>JavaScript</p><h3>{project.name}</h3><span className="project-description">{project.description}</span><a href={project.url || '#contact'} target={project.url ? '_blank' : undefined} rel={project.url ? 'noreferrer' : undefined}>View project <ArrowRight size={14} /></a></article>)}</div></div></section>
+      <section className="contact-strip" id="contact"><div className="shell contact-form-layout"><div><p className="eyebrow">LET'S WORK TOGETHER</p><h2>Have a project in mind?</h2><p>Send a message directly to my inbox. You can also attach a photo, CV, or project file.</p></div><form className="contact-form" onSubmit={sendContact}><div className="contact-row"><label>Your name<input required name="name" value={contactData.name} onChange={updateContact} placeholder="Your name" /></label><label>Your email<input required type="email" name="email" value={contactData.email} onChange={updateContact} placeholder="you@example.com" /></label></div><label>Your message<textarea required name="message" value={contactData.message} onChange={updateContact} placeholder="Tell me about your project..." rows="4" /></label><label className="attachment-field"><Paperclip size={16} /><span>{contactData.attachment ? contactData.attachment.name : 'Attach a file or photo (optional, 5 MB max)'}</span><input type="file" accept="image/*,.pdf,.doc,.docx,.zip" onChange={chooseAttachment} /></label>{contactStatus && <p className={'form-status ' + contactStatus.type}>{contactStatus.text}</p>}<button className="button light" disabled={sending}>{sending ? <><Loader2 size={15} className="spin" /> Sending...</> : <>Send message <Send size={15} /></>}</button></form></div></section>
+      <footer className="site-footer shell"><span>© 2026 Jay Comendador</span><div><a href="#home">Back to top</a><a className="dashboard-link" aria-label="Open portfolio dashboard" title="Portfolio dashboard" href="/dashboard"><LayoutDashboard size={16} /></a></div></footer>
+    </main>
+  );
 }
+  
+  
