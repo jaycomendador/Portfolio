@@ -1,0 +1,5 @@
+import { ExternalLink, Mail, Moon, Sun } from 'lucide-react';
+
+export default function SettingsPage({ darkMode, onToggleDarkMode }) {
+  return <section className="dashboard-panel settings-panel"><div className="panel-heading"><div><p className="dashboard-kicker">ACCOUNT</p><h2>Settings</h2></div></div><div className="settings-row"><div><strong>Dark mode</strong><span>Use a darker color theme for the dashboard.</span></div><button type="button" className={darkMode ? 'theme-toggle enabled' : 'theme-toggle'} onClick={onToggleDarkMode} aria-pressed={darkMode}><span>{darkMode ? <Moon size={14} /> : <Sun size={14} />}</span>{darkMode ? 'On' : 'Off'}</button></div><div className="settings-row"><div><strong>Public portfolio</strong><span>Your portfolio is live and visible to visitors.</span></div><a href="/" target="_blank" rel="noreferrer">View site <ExternalLink size={14} /></a></div><div className="settings-row"><div><strong>Support</strong><span>Need help with your dashboard or portfolio?</span></div><a href="mailto:jcomendador120@gmail.com?subject=Portfolio%20dashboard%20support">Contact support <Mail size={14} /></a></div></section>;
+}
