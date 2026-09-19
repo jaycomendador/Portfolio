@@ -5,8 +5,17 @@ const mongoose = require('mongoose');
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function createMailer() {
-  const { SMTP_USER, SMTP_PASS } = process.env;
+  const { SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS } = process.env;
   if (!SMTP_USER || !SMTP_PASS) return null;
+
+  if (SMTP_HOST) {
+    return nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: Number(SMTP_PORT) || 587,
+      secure: SMTP_SECURE === 'true',
+      auth: { user: SMTP_USER, pass: SMTP_PASS },
+    });
+  }
 
   return nodemailer.createTransport({
     service: 'gmail',
@@ -36,7 +45,9 @@ async function createContactMessage(req, res, next) {
 
     const transporter = createMailer();
     if (!transporter) {
-      return res.status(503).json({ message: 'Email delivery is not configured yet.' });
+      return res.status(503).json({
+        message: 'Email delivery is not configured. Set SMTP_USER and SMTP_PASS in server/.env, then restart the server.',
+      });
     }
 
     const contactMessage = await ContactMessage.create({ name, email, message });
@@ -61,8 +72,38 @@ async function createContactMessage(req, res, next) {
     if (error.name === 'ValidationError') {
       return res.status(400).json({ message: error.message });
     }
+    if (error.code === 'EAUTH' || error.responseCode === 535) {
+      return res.status(502).json({
+        message: 'Email delivery is unavailable. The portfolio owner needs to update the Gmail App Password.',
+      });
+    }
     return next(error);
   }
 }
 
-module.exports = { createContactMessage };
+async function listContactMessages(req, res, next) {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ message: 'Database connection is currently unavailable.' });
+    }
+    const messages = await ContactMessage.find().sort({ createdAt: -1 }).limit(100).lean();
+    return res.json(messages);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function deleteContactMessage(req, res, next) {
+  try {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) return res.status(400).json({ message: 'Invalid message ID.' });
+    if (mongoose.connection.readyState !== 1) return res.status(503).json({ message: 'Database connection is currently unavailable.' });
+    const deleted = await ContactMessage.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ message: 'Message not found.' });
+    return res.status(204).end();
+  } catch (error) {
+    return next(error);
+  }
+}
+
+module.exports = { createContactMessage, listContactMessages, deleteContactMessage };
