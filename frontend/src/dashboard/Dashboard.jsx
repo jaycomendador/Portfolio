@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, Bell, BriefcaseBusiness, CreditCard, FileText, Grid2X2, LogOut, Search, Settings, X } from 'lucide-react';
+import { ArrowLeft, Bell, BriefcaseBusiness, CreditCard, FileText, Grid2X2, LogOut, Menu, Search, Settings, X } from 'lucide-react';
 import profile from '../../public/profile.png';
 import { loadPortfolioContent, loadProjects, savePortfolioContent, saveProjects } from './portfolioContent';
 import DashboardPage from './pages/DashboardPage';
@@ -18,17 +18,30 @@ const languageCategories = {
   'Backend & data': ['Node.js', 'Express', 'PHP', 'Python', 'Java', 'C#', 'MySQL', 'PostgreSQL', 'MongoDB', 'Firebase'],
   'Tools & platforms': ['Git', 'GitHub', 'Figma', 'GraphQL', 'Vite', 'Docker'],
 };
+function timeGreeting(date) {
+  const hour = date.getHours();
+  if (hour < 12) return 'Good morning';
+  if (hour < 18) return 'Good afternoon';
+  return 'Good evening';
+}
 export default function Dashboard() {
   const [username, setUsername] = useState(''); const [password, setPassword] = useState('');
   const [message, setMessage] = useState(''); const [signedIn, setSignedIn] = useState(() => sessionStorage.getItem('portfolio-dashboard') === 'signed-in');
   const [content, setContent] = useState(loadPortfolioContent); const [editing, setEditing] = useState(false); const [active, setActive] = useState(() => { const savedPage = localStorage.getItem('portfolio-dashboard-page'); return nav.some(([page]) => page === savedPage) ? savedPage : 'Dashboard'; });
   const [projects, setProjects] = useState(loadProjects);
   const [query, setQuery] = useState(''); const [notice, setNotice] = useState(null);
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('portfolio-dashboard-theme') === 'dark');
+  // Default to dark; retain an explicit light-mode preference if the owner chose one.
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('portfolio-dashboard-theme') !== 'light');
   const [projectForm, setProjectForm] = useState(null);
   const [messages, setMessages] = useState([]); const [messagesStatus, setMessagesStatus] = useState('loading'); const [unreadCount, setUnreadCount] = useState(0);
   const [notificationOpen, setNotificationOpen] = useState(false); const [notificationMessages, setNotificationMessages] = useState([]);
+  const [navigationOpen, setNavigationOpen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(() => new Date());
   const knownMessageIds = useRef(null);
+  useEffect(() => {
+    const timer = window.setInterval(() => setCurrentTime(new Date()), 60_000);
+    return () => window.clearInterval(timer);
+  }, []);
   const update = (e) => setContent((old) => ({ ...old, [e.target.name]: e.target.value }));
   const navigate = (item) => { localStorage.setItem('portfolio-dashboard-page', item); setActive(item); if (item === 'Messages') { setUnreadCount(0); setNotice(null); } };
   const signOut = () => { sessionStorage.removeItem('portfolio-dashboard'); setSignedIn(false); };
@@ -82,7 +95,7 @@ export default function Dashboard() {
     knownMessageIds.current?.delete(id);
     setMessages((current) => current.filter((item) => item._id !== id));
   };
-  return <main className={darkMode ? 'client-dashboard dashboard-dark' : 'client-dashboard'} id="dashboard"><aside className="dashboard-sidebar"><button className="dashboard-profile" onClick={() => { window.location.href = '/'; }}><img src={profile} alt="Jay Comendador" /><strong>{content.fullName}</strong><span>Portfolio owner</span></button><nav>{nav.map(([item, Icon]) => <button key={item} type="button" className={active === item ? 'active' : ''} onClick={() => { setProjectForm(null); navigate(item); }}><Icon size={17} />{item}{item === 'Messages' && messages.length > 0 && <b className="sidebar-count">{messages.length}</b>}</button>)}</nav><button type="button" className="sidebar-help" onClick={() => { window.location.href = 'mailto:jcomendador120@gmail.com?subject=Portfolio%20dashboard%20support'; }}><small>Need help?</small><strong>Contact support</strong></button><button type="button" className="signout-button" onClick={signOut}><LogOut size={16} /> Sign out</button></aside><section className="dashboard-content"><header className="dashboard-header"><h1>{projectForm ? (projectForm.id ? 'Edit project' : 'Add new project') : active === 'Dashboard' ? <>Good morning, <span>{content.name}</span></> : active}</h1><div><label className="dashboard-search"><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search projects" /></label><button type="button" className="bell-button" aria-label={unreadCount ? `${unreadCount} new messages` : 'Notifications'} onClick={() => setNotificationOpen(true)}><Bell size={19} />{unreadCount > 0 && <b className="notification-count">{unreadCount > 9 ? '9+' : unreadCount}</b>}</button></div></header>{notice && <div className="dashboard-notice">{notice}<button type="button" onClick={() => setNotice(null)} aria-label="Close"><X size={14} /></button></div>}<DashboardBody active={active} content={content} filteredProjects={filteredProjects} setActive={navigate} edit={() => setEditing(true)} addProject={addProject} updateProject={updateProject} darkMode={darkMode} toggleDarkMode={toggleDarkMode} projectForm={projectForm} openProjectForm={setProjectForm} messages={messages} messagesStatus={messagesStatus} onDeleteMessage={deleteMessage} /></section>{notificationOpen && <NotificationModal notifications={notificationMessages} close={() => setNotificationOpen(false)} viewMessages={() => { setNotificationOpen(false); navigate('Messages'); }} />}{editing && <InformationModal content={content} update={update} save={save} close={() => setEditing(false)} message={message} />}</main>;
+  return <main className={darkMode ? 'client-dashboard dashboard-dark' : 'client-dashboard'} id="dashboard"><aside className="dashboard-sidebar"><button className="dashboard-profile" onClick={() => { window.location.href = '/'; }}><img src={profile} alt="Jay Comendador" /><strong>{content.fullName}</strong><span>Portfolio owner</span></button><button type="button" className="dashboard-menu-button" aria-label="Toggle dashboard navigation" aria-expanded={navigationOpen} onClick={() => setNavigationOpen((open) => !open)}>{navigationOpen ? <X size={19} /> : <Menu size={20} />}</button><nav className={navigationOpen ? 'open' : ''}>{nav.map(([item, Icon]) => <button key={item} type="button" className={active === item ? 'active' : ''} onClick={() => { setProjectForm(null); navigate(item); setNavigationOpen(false); }}><Icon size={17} />{item}{item === 'Messages' && messages.length > 0 && <b className="sidebar-count">{messages.length}</b>}</button>)}</nav><button type="button" className="sidebar-help" onClick={() => { window.location.href = 'mailto:jcomendador120@gmail.com?subject=Portfolio%20dashboard%20support'; }}><small>Need help?</small><strong>Contact support</strong></button><button type="button" className="signout-button" onClick={signOut}><LogOut size={16} /> Sign out</button></aside><section className="dashboard-content"><header className="dashboard-header"><h1>{projectForm ? (projectForm.id ? 'Edit project' : 'Add new project') : active === 'Dashboard' ? <>{timeGreeting(currentTime)}, <span>{content.name}</span></> : active}</h1><div><label className="dashboard-search"><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search projects" /></label><button type="button" className="bell-button" aria-label={unreadCount ? `${unreadCount} new messages` : 'Notifications'} onClick={() => setNotificationOpen(true)}><Bell size={19} />{unreadCount > 0 && <b className="notification-count">{unreadCount > 9 ? '9+' : unreadCount}</b>}</button></div></header>{notice && <div className="dashboard-notice">{notice}<button type="button" onClick={() => setNotice(null)} aria-label="Close"><X size={14} /></button></div>}<DashboardBody active={active} content={content} filteredProjects={filteredProjects} setActive={navigate} edit={() => setEditing(true)} addProject={addProject} updateProject={updateProject} darkMode={darkMode} toggleDarkMode={toggleDarkMode} projectForm={projectForm} openProjectForm={setProjectForm} messages={messages} messagesStatus={messagesStatus} onDeleteMessage={deleteMessage} /></section>{notificationOpen && <NotificationModal notifications={notificationMessages} close={() => setNotificationOpen(false)} viewMessages={() => { setNotificationOpen(false); navigate('Messages'); }} />}{editing && <InformationModal content={content} update={update} save={save} close={() => setEditing(false)} message={message} />}</main>;
 }
 
 function DashboardBody({ active, content, filteredProjects, setActive, edit, addProject, updateProject, darkMode, toggleDarkMode, projectForm, openProjectForm, messages, messagesStatus, onDeleteMessage }) {

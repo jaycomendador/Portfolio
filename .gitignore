@@ -1,4 +1,5 @@
 .env
 server/.env
+account
 node_modules
 dist

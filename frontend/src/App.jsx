@@ -9,7 +9,8 @@ const InstagramIcon = () => <svg viewBox="0 0 24 24" fill="none" aria-hidden="tr
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  // The public site intentionally opens in its dark presentation.
+  const [darkMode, setDarkMode] = useState(true);
   const [contactData, setContactData] = useState({ name: '', email: '', message: '', attachment: null });
   const [contactStatus, setContactStatus] = useState(null);
   const [sending, setSending] = useState(false);
@@ -60,7 +61,9 @@ export default function App() {
         reader.readAsDataURL(contactData.attachment);
       }) : null;
       const response = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...contactData, attachment }) });
-      const result = await response.json();
+      const rawResponse = await response.text();
+      let result = {};
+      try { result = rawResponse ? JSON.parse(rawResponse) : {}; } catch { throw new Error('The contact service returned an invalid response. Please try again shortly.'); }
       if (!response.ok) throw new Error(result.message || 'Unable to send your message.');
       setContactStatus({ type: 'success', text: result.message });
       setContactData({ name: '', email: '', message: '', attachment: null });
@@ -76,7 +79,7 @@ export default function App() {
       <section className="hero-section" id="home">
         <header className="site-header shell">
           <a className="brand" href="#home"><Code2 size={16} /> <span>Portfolio</span></a>
-          <nav className={menuOpen ? 'nav-links open' : 'nav-links'}>{links.map(([label, href]) => <a onClick={() => setMenuOpen(false)} href={href} key={label}>{label}</a>)}</nav>
+          <nav className={menuOpen ? 'nav-links open' : 'nav-links'}>{links.map(([label, href]) => <a onClick={() => setMenuOpen(false)} href={href} key={label}>{label}</a>)}<button className="mobile-theme-button" onClick={() => setDarkMode(!darkMode)} aria-label="Toggle dark mode">{darkMode ? <Sun size={16} /> : <Moon size={16} />}<span>{darkMode ? 'Light mode' : 'Dark mode'}</span></button></nav>
           <div className="social-links"><a href="#contact">f</a><a href="#contact">in</a><a href="#contact">◎</a></div>
           <button className="theme-button" onClick={() => setDarkMode(!darkMode)} aria-label="Toggle dark mode">{darkMode ? <Sun size={15} /> : <Moon size={15} />}</button>
           <button className="menu-button" aria-label="Toggle menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
