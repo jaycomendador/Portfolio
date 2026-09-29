@@ -37,19 +37,18 @@ app.use((error, _req, res, _next) => {
 });
 
 async function startServer() {
-  try {
-    await connectDatabase();
-    const server = app.listen(port, () => {
-      console.log(`Server listening on http://localhost:${port}`);
-    });
+  const server = app.listen(port, () => {
+    console.log(`Server listening on http://localhost:${port}`);
+  });
 
-    const shutdown = () => server.close(() => mongoose.connection.close());
-    process.once('SIGINT', shutdown);
-    process.once('SIGTERM', shutdown);
-  } catch (error) {
-    console.error(`Unable to start server: ${error.message}`);
-    process.exit(1);
-  }
+  // Keep the HTTP API available while MongoDB is starting or unavailable.
+  connectDatabase().catch((error) => {
+    console.error(`MongoDB connection failed: ${error.message}`);
+  });
+
+  const shutdown = () => server.close(() => mongoose.connection.close());
+  process.once('SIGINT', shutdown);
+  process.once('SIGTERM', shutdown);
 }
 
 startServer();

@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, Bell, BriefcaseBusiness, CreditCard, FileText, Grid2X2, LogOut, Menu, Search, Settings, X } from 'lucide-react';
-import profile from '../../public/profile.png';
-import { loadPortfolioContent, loadProjects, savePortfolioContent, saveProjects } from './portfolioContent';
+import { ArrowLeft, Award, Bell, BriefcaseBusiness, FileText, Grid2X2, LogOut, Menu, Search, Settings, X } from 'lucide-react';
+const profile = '/profile.png';
+import { loadCertificates, loadPortfolioContent, loadProjects, saveCertificates, savePortfolioContent, saveProjects } from './portfolioContent';
 import DashboardPage from './pages/DashboardPage';
 import ProjectsPage from './pages/ProjectsPage';
 import PortfolioPage from './pages/PortfolioPage';
 import MessagesPage from './pages/MessagesPage';
 import SettingsPage from './pages/SettingsPage';
 import ProjectFormPage from './pages/ProjectFormPage';
+import CertificatesPage from './pages/CertificatesPage';
 
 const account = { username: 'jayadmin', password: 'JayPortfolio!2026' };
-const nav = [['Dashboard', Grid2X2], ['Projects', BriefcaseBusiness], ['All info', FileText], ['Messages', CreditCard], ['Settings', Settings]];
+const nav = [['Dashboard', Grid2X2], ['Projects', BriefcaseBusiness], ['All info', FileText], ['Certificates', Award], ['Settings', Settings]];
 const languageCategories = {
   'Core web': ['HTML', 'CSS', 'JavaScript', 'TypeScript'],
   'Frontend frameworks': ['React', 'React Native', 'Vue', 'Angular', 'Svelte', 'Next.js'],
@@ -29,6 +30,7 @@ export default function Dashboard() {
   const [message, setMessage] = useState(''); const [signedIn, setSignedIn] = useState(() => sessionStorage.getItem('portfolio-dashboard') === 'signed-in');
   const [content, setContent] = useState(loadPortfolioContent); const [editing, setEditing] = useState(false); const [active, setActive] = useState(() => { const savedPage = localStorage.getItem('portfolio-dashboard-page'); return nav.some(([page]) => page === savedPage) ? savedPage : 'Dashboard'; });
   const [projects, setProjects] = useState(loadProjects);
+  const [certificates, setCertificates] = useState(loadCertificates);
   const [query, setQuery] = useState(''); const [notice, setNotice] = useState(null);
   // Default to dark; retain an explicit light-mode preference if the owner chose one.
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('portfolio-dashboard-theme') !== 'light');
@@ -59,6 +61,16 @@ export default function Dashboard() {
     setProjects(updatedProjects);
     saveProjects(updatedProjects);
     setProjectForm(null);
+  };
+  const addCertificate = (certificate) => {
+    const updatedCertificates = [certificate, ...certificates];
+    saveCertificates(updatedCertificates);
+    setCertificates(updatedCertificates);
+  };
+  const deleteCertificate = (id) => {
+    const updatedCertificates = certificates.filter((certificate) => certificate.id !== id);
+    saveCertificates(updatedCertificates);
+    setCertificates(updatedCertificates);
   };
   const toggleDarkMode = () => setDarkMode((enabled) => { localStorage.setItem('portfolio-dashboard-theme', enabled ? 'light' : 'dark'); return !enabled; });
   useEffect(() => {
@@ -95,13 +107,14 @@ export default function Dashboard() {
     knownMessageIds.current?.delete(id);
     setMessages((current) => current.filter((item) => item._id !== id));
   };
-  return <main className={darkMode ? 'client-dashboard dashboard-dark' : 'client-dashboard'} id="dashboard"><aside className="dashboard-sidebar"><button className="dashboard-profile" onClick={() => { window.location.href = '/'; }}><img src={profile} alt="Jay Comendador" /><strong>{content.fullName}</strong><span>Portfolio owner</span></button><button type="button" className="dashboard-menu-button" aria-label="Toggle dashboard navigation" aria-expanded={navigationOpen} onClick={() => setNavigationOpen((open) => !open)}>{navigationOpen ? <X size={19} /> : <Menu size={20} />}</button><nav className={navigationOpen ? 'open' : ''}>{nav.map(([item, Icon]) => <button key={item} type="button" className={active === item ? 'active' : ''} onClick={() => { setProjectForm(null); navigate(item); setNavigationOpen(false); }}><Icon size={17} />{item}{item === 'Messages' && messages.length > 0 && <b className="sidebar-count">{messages.length}</b>}</button>)}</nav><button type="button" className="sidebar-help" onClick={() => { window.location.href = 'mailto:jcomendador120@gmail.com?subject=Portfolio%20dashboard%20support'; }}><small>Need help?</small><strong>Contact support</strong></button><button type="button" className="signout-button" onClick={signOut}><LogOut size={16} /> Sign out</button></aside><section className="dashboard-content"><header className="dashboard-header"><h1>{projectForm ? (projectForm.id ? 'Edit project' : 'Add new project') : active === 'Dashboard' ? <>{timeGreeting(currentTime)}, <span>{content.name}</span></> : active}</h1><div><label className="dashboard-search"><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search projects" /></label><button type="button" className="bell-button" aria-label={unreadCount ? `${unreadCount} new messages` : 'Notifications'} onClick={() => setNotificationOpen(true)}><Bell size={19} />{unreadCount > 0 && <b className="notification-count">{unreadCount > 9 ? '9+' : unreadCount}</b>}</button></div></header>{notice && <div className="dashboard-notice">{notice}<button type="button" onClick={() => setNotice(null)} aria-label="Close"><X size={14} /></button></div>}<DashboardBody active={active} content={content} filteredProjects={filteredProjects} setActive={navigate} edit={() => setEditing(true)} addProject={addProject} updateProject={updateProject} darkMode={darkMode} toggleDarkMode={toggleDarkMode} projectForm={projectForm} openProjectForm={setProjectForm} messages={messages} messagesStatus={messagesStatus} onDeleteMessage={deleteMessage} /></section>{notificationOpen && <NotificationModal notifications={notificationMessages} close={() => setNotificationOpen(false)} viewMessages={() => { setNotificationOpen(false); navigate('Messages'); }} />}{editing && <InformationModal content={content} update={update} save={save} close={() => setEditing(false)} message={message} />}</main>;
+  return <main className={darkMode ? 'client-dashboard dashboard-dark' : 'client-dashboard'} id="dashboard"><aside className="dashboard-sidebar"><button className="dashboard-profile" onClick={() => { window.location.href = '/'; }}><img src={profile} alt="Jay Comendador" /><strong>{content.fullName}</strong><span>Portfolio owner</span></button><button type="button" className="dashboard-menu-button" aria-label="Toggle dashboard navigation" aria-expanded={navigationOpen} onClick={() => setNavigationOpen((open) => !open)}>{navigationOpen ? <X size={19} /> : <Menu size={20} />}</button><nav className={navigationOpen ? 'open' : ''}>{nav.map(([item, Icon]) => <button key={item} type="button" className={active === item ? 'active' : ''} onClick={() => { setProjectForm(null); navigate(item); setNavigationOpen(false); }}><Icon size={17} />{item}{item === 'Messages' && messages.length > 0 && <b className="sidebar-count">{messages.length}</b>}</button>)}</nav><button type="button" className="sidebar-help" onClick={() => { window.location.href = 'mailto:jcomendador120@gmail.com?subject=Portfolio%20dashboard%20support'; }}><small>Need help?</small><strong>Contact support</strong></button><button type="button" className="signout-button" onClick={signOut}><LogOut size={16} /> Sign out</button></aside><section className="dashboard-content"><header className="dashboard-header"><h1>{projectForm ? (projectForm.id ? 'Edit project' : 'Add new project') : active === 'Dashboard' ? <>{timeGreeting(currentTime)}, <span>{content.name}</span></> : active}</h1><div><label className="dashboard-search"><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search projects" /></label><button type="button" className="bell-button" aria-label={unreadCount ? `${unreadCount} new messages` : 'Notifications'} onClick={() => setNotificationOpen(true)}><Bell size={19} />{unreadCount > 0 && <b className="notification-count">{unreadCount > 9 ? '9+' : unreadCount}</b>}</button></div></header>{notice && <div className="dashboard-notice">{notice}<button type="button" onClick={() => setNotice(null)} aria-label="Close"><X size={14} /></button></div>}<DashboardBody active={active} content={content} filteredProjects={filteredProjects} certificates={certificates} onAddCertificate={addCertificate} onDeleteCertificate={deleteCertificate} setActive={navigate} edit={() => setEditing(true)} addProject={addProject} updateProject={updateProject} darkMode={darkMode} toggleDarkMode={toggleDarkMode} projectForm={projectForm} openProjectForm={setProjectForm} messages={messages} messagesStatus={messagesStatus} onDeleteMessage={deleteMessage} /></section>{notificationOpen && <NotificationModal notifications={notificationMessages} close={() => setNotificationOpen(false)} viewMessages={() => { setNotificationOpen(false); navigate('Messages'); }} />}{editing && <InformationModal content={content} update={update} save={save} close={() => setEditing(false)} message={message} />}</main>;
 }
 
-function DashboardBody({ active, content, filteredProjects, setActive, edit, addProject, updateProject, darkMode, toggleDarkMode, projectForm, openProjectForm, messages, messagesStatus, onDeleteMessage }) {
+function DashboardBody({ active, content, filteredProjects, certificates, onAddCertificate, onDeleteCertificate, setActive, edit, addProject, updateProject, darkMode, toggleDarkMode, projectForm, openProjectForm, messages, messagesStatus, onDeleteMessage }) {
   if (projectForm) return <ProjectFormPage initialProject={projectForm.id ? projectForm : undefined} onSave={projectForm.id ? updateProject : addProject} onCancel={() => openProjectForm(null)} />;
   if (active === 'Projects') return <ProjectsPage projects={filteredProjects} onEdit={edit} onOpenAdd={() => openProjectForm({})} onOpenEdit={openProjectForm} />;
   if (active === 'All info') return <PortfolioPage content={content} onEdit={edit} />;
+  if (active === 'Certificates') return <CertificatesPage certificates={certificates} onAdd={onAddCertificate} onDelete={onDeleteCertificate} />;
   if (active === 'Messages') return <MessagesPage messages={messages} status={messagesStatus} onDelete={onDeleteMessage} />;
   if (active === 'Settings') return <SettingsPage darkMode={darkMode} onToggleDarkMode={toggleDarkMode} />;
   return <DashboardPage content={content} projects={filteredProjects} onNavigate={setActive} onEdit={edit} />;
