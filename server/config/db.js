@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dns = require('node:dns');
 
 async function connectDatabase() {
-  const { MONGODB_URI } = process.env;
+  const MONGODB_URI = process.env.MONGODB_URI?.trim();
 
   if (!MONGODB_URI) {
     console.warn('⚠️  MONGODB_URI is not configured in server/.env.');

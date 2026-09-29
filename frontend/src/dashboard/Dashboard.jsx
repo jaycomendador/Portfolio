@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, Bell, BriefcaseBusiness, CreditCard, FileText, Grid2X2, LogOut, Menu, Search, Settings, X } from 'lucide-react';
-import profile from '../../public/profile.png';
+const profile = '/profile.png';
 import { loadPortfolioContent, loadProjects, savePortfolioContent, saveProjects } from './portfolioContent';
 import DashboardPage from './pages/DashboardPage';
 import ProjectsPage from './pages/ProjectsPage';

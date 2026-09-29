@@ -37,12 +37,6 @@ async function createContactMessage(req, res, next) {
       return res.status(400).json({ message: 'The attached file is invalid.' });
     }
 
-    if (mongoose.connection.readyState !== 1) {
-      return res.status(503).json({
-        message: 'Database connection is currently unavailable. Please verify MONGODB_URI in server/.env.',
-      });
-    }
-
     const transporter = createMailer();
     if (!transporter) {
       return res.status(503).json({
@@ -50,7 +44,6 @@ async function createContactMessage(req, res, next) {
       });
     }
 
-    const contactMessage = await ContactMessage.create({ name, email, message });
     await transporter.sendMail({
       from: `Jay Comendador Portfolio <${process.env.SMTP_USER}>`,
       to: process.env.CONTACT_RECIPIENT || 'jcomendador120@gmail.com',
@@ -64,9 +57,20 @@ async function createContactMessage(req, res, next) {
       }] : [],
     });
 
+    // Email delivery is the contact form's primary action. Keep a dashboard
+    // copy when MongoDB is available, but don't block delivery on the database.
+    let contactMessage;
+    if (mongoose.connection.readyState === 1) {
+      try {
+        contactMessage = await ContactMessage.create({ name, email, message });
+      } catch (error) {
+        console.error('Contact email sent, but the message could not be saved:', error);
+      }
+    }
+
     return res.status(201).json({
       message: 'Thanks — your message has been sent.',
-      id: contactMessage.id,
+      ...(contactMessage ? { id: contactMessage.id } : {}),
     });
   } catch (error) {
     if (error.name === 'ValidationError') {
