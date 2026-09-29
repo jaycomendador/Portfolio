@@ -29,6 +29,17 @@ export function loadProjects() {
 }
 
 export function saveProjects(projects) { localStorage.setItem('portfolio-projects', JSON.stringify(projects)); }
+
+export function loadCertificates() {
+  try {
+    const certificates = JSON.parse(localStorage.getItem('portfolio-certificates') || '[]');
+    return Array.isArray(certificates) ? certificates : [];
+  } catch { return []; }
+}
+
+export function saveCertificates(certificates) {
+  localStorage.setItem('portfolio-certificates', JSON.stringify(certificates));
+}
 import alertoCalbayogImage from '../assets/alertocalbayog.png';
 import ayskeopiImage from '../assets/ayeskeopi.png';
 import crmsImage from '../assets/CMRS.png';

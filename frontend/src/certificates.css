@@ -1,0 +1,41 @@
+/* Public portfolio certificate gallery. */
+.certificates-section{padding:76px 0;background:#f4f7fb;color:#243348}
+.certificates-section .section-title{margin-bottom:30px}
+.certificate-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.portfolio-certificate-card{display:grid;grid-template-columns:minmax(130px,.8fr) minmax(0,1.2fr);overflow:hidden;border:1px solid #dbe3ed;border-radius:12px;background:#fff;box-shadow:0 10px 28px #22354d0b}
+.portfolio-certificate-preview{display:grid;place-items:center;min-height:170px;background:#e8eef6;color:#637b98}
+.portfolio-certificate-preview img{width:100%;height:100%;min-height:170px;max-height:220px;object-fit:cover}
+.portfolio-certificate-details{display:flex;flex-direction:column;align-items:flex-start;padding:18px}
+.portfolio-certificate-details>span{display:flex;align-items:center;gap:6px;color:#6266d9;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.portfolio-certificate-details h3{margin:12px 0 5px;font-size:15px;line-height:1.35}
+.portfolio-certificate-details p{margin:0 0 12px;color:#728096;font-size:11px}
+.portfolio-certificate-details a{display:inline-flex;align-items:center;gap:5px;margin-top:auto;color:#5558d8;font-size:10px;font-weight:700;text-decoration:none}
+.certificates-empty{display:grid;justify-items:center;gap:9px;padding:37px;border:1px dashed #aab8cb;border-radius:12px;color:#73849a}
+.certificates-empty p{margin:0;font-size:12px}
+.dark-mode .certificates-section{background:#101a2b;color:#edf3fb}
+.dark-mode .portfolio-certificate-card{background:#172438;border-color:#334861;box-shadow:none}
+.dark-mode .portfolio-certificate-preview{background:#0d1726;color:#a9bbd5}
+.dark-mode .portfolio-certificate-details p{color:#a3b2c7}
+.dark-mode .certificates-empty{border-color:#52657e;color:#aab9ce}
+
+/* Dashboard certificate upload and list. */
+.certificate-upload-form{margin-bottom:26px;padding:18px;border:1px solid #e1e7f0;border-radius:12px;background:#f8faff}
+.certificate-file-upload{display:flex;align-items:center;min-height:48px;color:#718199}
+.certificate-manager-list{display:grid;gap:10px}
+.certificate-manager-card{display:flex;align-items:center;gap:13px;padding:11px;border:1px solid #e4e9f0;border-radius:10px;background:#fff}
+.certificate-manager-preview{flex:0 0 68px;width:68px;height:52px;object-fit:cover;border-radius:6px;background:#edf2f8}
+.certificate-manager-preview.pdf{display:grid;place-content:center;justify-items:center;color:#687b95}
+.certificate-manager-preview.pdf span{font-size:9px;font-weight:800}
+.certificate-manager-info{display:grid;min-width:0;flex:1;gap:5px}
+.certificate-manager-info strong{overflow:hidden;color:#34435a;font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+.certificate-manager-info span{color:#8290a2;font-size:10px}
+.certificate-manager-actions{display:flex;align-items:center;gap:10px}
+.certificate-manager-actions a,.certificate-manager-actions button{display:grid;place-items:center;width:30px;height:30px;border:0;border-radius:7px;background:#eff2f8;color:#61718a;cursor:pointer}
+.certificate-manager-actions button{color:#c04e58}
+.dashboard-dark .certificate-upload-form,.dashboard-dark .certificate-manager-card{background:#142035;border-color:#33435b}
+.dashboard-dark .certificate-manager-info strong{color:#e5edf8}
+.dashboard-dark .certificate-manager-info span{color:#9eafc4}
+.dashboard-dark .certificate-manager-actions a{background:#23344d;color:#c6d5e8}
+.dashboard-dark .certificate-manager-actions button{background:#3b232e;color:#ff9aa5}
+@media(max-width:760px){.certificate-grid{grid-template-columns:1fr}.certificates-section{padding:58px 0}}
+@media(max-width:600px){.certificate-upload-form{padding:13px}.portfolio-certificate-card{grid-template-columns:1fr}.portfolio-certificate-preview,.portfolio-certificate-preview img{min-height:150px;max-height:190px}}
