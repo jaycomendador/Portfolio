@@ -4,10 +4,9 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import './certificates.css'
 import App from './App.jsx'
-import Contact from './pages/Contact.jsx'
 import Dashboard from './dashboard/Dashboard.jsx'
 
-const Page = window.location.pathname === '/contact' ? Contact : window.location.pathname === '/dashboard' ? Dashboard : App
+const Page = window.location.pathname === '/dashboard' ? Dashboard : App
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
