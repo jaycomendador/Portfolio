@@ -1,5 +1,6 @@
 .env
 server/.env
 account
+server/data/
 node_modules
 dist

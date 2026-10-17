@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, Award, Bell, BriefcaseBusiness, FileText, Grid2X2, LogOut, Menu, Search, Settings, X } from 'lucide-react';
 const profile = '/profile.png';
-import { loadCertificates, loadPortfolioContent, loadProjects, saveCertificates, savePortfolioContent, saveProjects } from './portfolioContent';
+import { defaultPortfolioContent, fetchPortfolioRecord, loadCertificates, loadPortfolioContent, loadProjects, saveCertificates, savePortfolioContent, savePortfolioRecord, saveProjects } from './portfolioContent';
 import DashboardPage from './pages/DashboardPage';
 import ProjectsPage from './pages/ProjectsPage';
 import PortfolioPage from './pages/PortfolioPage';
@@ -40,27 +40,54 @@ export default function Dashboard() {
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const knownMessageIds = useRef(null);
+  const portfolioSnapshot = useRef({ content, projects });
+  useEffect(() => { portfolioSnapshot.current = { content, projects }; }, [content, projects]);
   useEffect(() => {
     const timer = window.setInterval(() => setCurrentTime(new Date()), 60_000);
     return () => window.clearInterval(timer);
   }, []);
+  useEffect(() => {
+    if (!signedIn) return undefined;
+    let active = true;
+    fetchPortfolioRecord().then(async (record) => {
+      if (!active) return;
+      if (record.initialized) {
+        const savedContent = { ...defaultPortfolioContent, ...record.content };
+        const savedProjects = Array.isArray(record.projects) ? record.projects : [];
+        setContent(savedContent);
+        setProjects(savedProjects);
+        savePortfolioContent(savedContent);
+        saveProjects(savedProjects);
+        return;
+      }
+      const result = await savePortfolioRecord(portfolioSnapshot.current.content, portfolioSnapshot.current.projects);
+      if (active) setNotice(result.storage === 'mongodb' ? 'Your existing portfolio data has been saved to MongoDB.' : 'Your existing portfolio data has been saved on this server.');
+    }).catch(() => {
+      if (active) setNotice('The database is unavailable. Changes will stay in this browser until it reconnects.');
+    });
+    return () => { active = false; };
+  }, [signedIn]);
   const update = (e) => setContent((old) => ({ ...old, [e.target.name]: e.target.value }));
   const navigate = (item) => { localStorage.setItem('portfolio-dashboard-page', item); setActive(item); if (item === 'Messages') { setUnreadCount(0); setNotice(null); } };
   const signOut = () => { sessionStorage.removeItem('portfolio-dashboard'); setSignedIn(false); };
   function signIn(e) { e.preventDefault(); if (username === account.username && password === account.password) { sessionStorage.setItem('portfolio-dashboard', 'signed-in'); setSignedIn(true); setMessage(''); } else setMessage('Incorrect username or password.'); }
-  function save(e) { e.preventDefault(); savePortfolioContent(content); setEditing(false); setActive('Dashboard'); setMessage('Changes saved.'); }
+  function save(e) { e.preventDefault(); savePortfolioContent(content); saveProjects(projects); setEditing(false); setActive('Dashboard'); setMessage('Changes saved.'); savePortfolioRecord(content, projects).then((result) => setNotice(result.storage === 'mongodb' ? 'Portfolio changes saved to MongoDB.' : 'Portfolio changes saved on this server.')).catch(() => setNotice('Changes are saved in this browser, but the server could not be reached.')); }
   const addProject = (project) => {
     const updatedProjects = [project, ...projects];
     setProjects(updatedProjects);
     saveProjects(updatedProjects);
-    setContent((current) => ({ ...current, projects: String(updatedProjects.length) }));
+    const updatedContent = { ...content, projects: String(updatedProjects.length) };
+    setContent(updatedContent);
+    savePortfolioContent(updatedContent);
     setProjectForm(null);
+    savePortfolioRecord(updatedContent, updatedProjects).then((result) => setNotice(result.storage === 'mongodb' ? 'Project and project count saved to MongoDB.' : 'Project and project count saved on this server.')).catch(() => setNotice('Project is saved in this browser, but the server could not be reached.'));
   };
   const updateProject = (updatedProject) => {
     const updatedProjects = projects.map((project) => project.id === updatedProject.id ? updatedProject : project);
     setProjects(updatedProjects);
     saveProjects(updatedProjects);
     setProjectForm(null);
+    savePortfolioRecord(content, updatedProjects).then((result) => setNotice(result.storage === 'mongodb' ? 'Project changes saved to MongoDB.' : 'Project changes saved on this server.')).catch(() => setNotice('Project changes are saved in this browser, but the server could not be reached.'));
   };
   const addCertificate = (certificate) => {
     const updatedCertificates = [certificate, ...certificates];
@@ -100,7 +127,7 @@ export default function Dashboard() {
   }, [signedIn]);
 
   if (!signedIn) return <Login username={username} password={password} message={message} setUsername={setUsername} setPassword={setPassword} signIn={signIn} />;
-  const filteredProjects = projects.filter((project) => project.name.toLowerCase().includes(query.toLowerCase()));
+  const filteredProjects = projects.filter((project) => typeof project?.name === 'string' && project.name.toLowerCase().includes(query.toLowerCase()));
   const deleteMessage = async (id) => {
     const response = await fetch(`/api/contact/${id}`, { method: 'DELETE' });
     if (!response.ok) { const data = await response.json().catch(() => ({})); throw new Error(data.message || 'Unable to delete this message.'); }
@@ -125,6 +152,10 @@ function NotificationModal({ notifications, close, viewMessages }) {
 }
 
 function Login({ username, password, message, setUsername, setPassword, signIn }) { return <main className="dashboard-page"><section className="dashboard-login-card"><a className="dashboard-back" href="/"><ArrowLeft size={16} /> Back to portfolio</a><div className="dashboard-icon"><Grid2X2 size={26} /></div><p className="dashboard-kicker">PORTFOLIO ADMIN</p><h1>Welcome back</h1><p className="dashboard-copy">Sign in to manage your portfolio information.</p><form className="dashboard-form" onSubmit={signIn}><label>Username<input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Enter your username" required /></label><label>Password<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required /></label><button>Sign in</button></form>{message && <p className="dashboard-message">{message}</p>}</section></main>; }
-function InformationModal({ content, update, save, close, message }) { const updateLanguages = (languages, levels) => { update({ target: { name: 'languages', value: languages.join(', ') } }); update({ target: { name: 'skillLevels', value: levels } }); }; return <div className="information-modal-backdrop" role="presentation"><section className="information-modal" role="dialog" aria-modal="true" aria-labelledby="information-modal-title"><div className="information-modal-header"><div><p className="dashboard-kicker">PORTFOLIO ADMIN</p><h2 id="information-modal-title">Edit all information</h2><span>Projects are managed separately in the Projects section.</span></div><button type="button" onClick={close} aria-label="Close editor"><X size={18} /></button></div><form className="dashboard-editor" onSubmit={save}>{[['name','First name'],['fullName','Full name'],['role','Role'],['experience','Experience'],['clients','Clients count'],['email','Email'],['location','Location']].map(([name,label]) => <label key={name}>{label}<input name={name} value={content[name]} onChange={update} readOnly={name === 'name' || name === 'fullName'} aria-label={`${label}${name === 'name' || name === 'fullName' ? ' (locked)' : ''}`} required /></label>)}<LanguagePicker value={content.languages} levels={content.skillLevels || {}} onChange={updateLanguages} /><label className="dashboard-wide">Hero introduction<textarea name="intro" value={content.intro} onChange={update} rows="3" /></label><label className="dashboard-wide">About me<textarea name="about" value={content.about} onChange={update} rows="5" /></label><div className="information-modal-actions"><button type="button" className="project-secondary-button" onClick={close}>Cancel</button><button className="project-primary-button">Save changes</button></div></form>{message && <p className="dashboard-message dashboard-success">{message}</p>}</section></div>; }
+function InformationModal({ content, update, save, close, message }) { const updateLanguages = (languages, levels) => { update({ target: { name: 'languages', value: languages.join(', ') } }); update({ target: { name: 'skillLevels', value: levels } }); }; const updateProgrammingLevel = (language, value) => { const levels = { ...({ Java: 50, Python: 50, ...content.programmingLanguageLevels }), [language]: Math.min(100, Math.max(0, Number(value) || 0)) }; update({ target: { name: 'programmingLanguageLevels', value: levels } }); }; const updateArsenalLevel = (skill, value) => { const levels = { ...content.arsenalLevels, [skill]: Math.min(100, Math.max(0, Number(value) || 0)) }; update({ target: { name: 'arsenalLevels', value: levels } }); }; return <div className="information-modal-backdrop" role="presentation"><section className="information-modal" role="dialog" aria-modal="true" aria-labelledby="information-modal-title"><div className="information-modal-header"><div><p className="dashboard-kicker">PORTFOLIO ADMIN</p><h2 id="information-modal-title">Edit all information</h2><span>Projects are managed separately in the Projects section.</span></div><button type="button" onClick={close} aria-label="Close editor"><X size={18} /></button></div><form className="dashboard-editor" onSubmit={save}>{[['name','First name'],['fullName','Full name'],['role','Role'],['experience','Experience'],['clients','Clients count'],['email','Email'],['location','Location']].map(([name,label]) => <label key={name}>{label}<input name={name} value={content[name]} onChange={update} readOnly={name === 'name' || name === 'fullName'} aria-label={`${label}${name === 'name' || name === 'fullName' ? ' (locked)' : ''}`} required /></label>)}<LanguagePicker value={content.languages} levels={content.skillLevels || {}} onChange={updateLanguages} /><ProgrammingLanguageEditor levels={{ Java: 50, Python: 50, ...content.programmingLanguageLevels }} onChange={updateProgrammingLevel} /><ArsenalProficiencyEditor levels={{ 'MERN Stack': 70, HTML5: 85, CSS3: 80, 'React.js': 70, 'Node.js': 65, 'React Native': 50, 'REST APIs': 50, 'Git/GitHub': 46, Figma: 49, MySQL: 80, PHP: 55, MongoDB: 70, ...content.arsenalLevels }} onChange={updateArsenalLevel} /><label className="dashboard-wide">Hero introduction<textarea name="intro" value={content.intro} onChange={update} rows="3" /></label><label className="dashboard-wide">About me<textarea name="about" value={content.about} onChange={update} rows="5" /></label><div className="information-modal-actions"><button type="button" className="project-secondary-button" onClick={close}>Cancel</button><button className="project-primary-button">Save changes</button></div></form>{message && <p className="dashboard-message dashboard-success">{message}</p>}</section></div>; }
+
+function ProgrammingLanguageEditor({ levels, onChange }) { return <fieldset className="language-picker dashboard-wide"><legend>Programming language proficiency</legend><div className="programming-language-fields">{['Java', 'Python'].map((language) => <label key={language}>{language}<input type="number" min="0" max="100" value={levels[language] ?? 50} onChange={(event) => onChange(language, event.target.value)} /><span>%</span></label>)}</div></fieldset>; }
+
+function ArsenalProficiencyEditor({ levels, onChange }) { const groups = { Frontend: ['HTML5', 'CSS3', 'React.js', 'React Native'], Backend: ['Node.js', 'REST APIs', 'MySQL', 'PHP', 'MongoDB'], 'Full Stack': ['MERN Stack'], 'Design & Tools': ['Figma', 'Git/GitHub'] }; return <fieldset className="language-picker dashboard-wide"><legend>Technical Arsenal proficiency</legend><div className="arsenal-editor-groups">{Object.entries(groups).map(([category, skills]) => <section key={category}><h3>{category}</h3><div className="programming-language-fields">{skills.map((skill) => <label key={skill}>{skill}<input type="number" min="0" max="100" value={levels[skill] ?? 50} onChange={(event) => onChange(skill, event.target.value)} /><span>%</span></label>)}</div></section>)}</div></fieldset>; }
 
 function LanguagePicker({ value, levels, onChange }) { const [search, setSearch] = useState(''); const selected = value.split(',').map((item) => item.trim()).filter(Boolean); const matches = (language) => language.toLowerCase().includes(search.toLowerCase()); const toggle = (language) => { const next = selected.includes(language) ? selected.filter((item) => item !== language) : [...selected, language]; const nextLevels = { ...levels }; if (next.includes(language)) nextLevels[language] = nextLevels[language] || 50; else delete nextLevels[language]; onChange(next, nextLevels); }; const changeLevel = (language, percentage) => onChange(selected, { ...levels, [language]: Math.min(100, Math.max(1, Number(percentage) || 1)) }); return <fieldset className="language-picker dashboard-wide"><legend>Languages and technologies</legend><div className="language-search"><Search size={15} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search frontend languages and tools" /></div><div className="selected-languages">{selected.length ? selected.map((language) => <label key={language}>{language}<input type="number" min="1" max="100" value={levels[language] || 50} onChange={(event) => changeLevel(language, event.target.value)} required /><span>%</span><button type="button" onClick={() => toggle(language)} aria-label={`Remove ${language}`}><X size={12} /></button></label>) : <span>Select the technologies you use.</span>}</div>{Object.entries(languageCategories).map(([category, languages]) => { const visibleLanguages = languages.filter(matches); return visibleLanguages.length ? <section className="language-category" key={category}><h3>{category}</h3><div>{visibleLanguages.map((language) => <button type="button" className={selected.includes(language) ? 'selected' : ''} key={language} onClick={() => toggle(language)}>{language}</button>)}</div></section> : null; })}</fieldset>; }
