@@ -9,6 +9,7 @@ function getPortfolioModel() {
       key: { type: String, required: true, unique: true, default: 'primary' },
       content: { type: mongoose.Schema.Types.Mixed, default: {} },
       projects: { type: [mongoose.Schema.Types.Mixed], default: [] },
+      certificates: { type: [mongoose.Schema.Types.Mixed], default: [] },
     }, { timestamps: true, minimize: false });
     portfolioModel = mongoose.model('PortfolioRecord', schema);
   }
@@ -50,24 +51,27 @@ export default async function handler(req, res) {
         initialized: true,
         content: record.content || {},
         projects: Array.isArray(record.projects) ? record.projects : [],
+        certificates: Array.isArray(record.certificates) ? record.certificates : [],
         updatedAt: record.updatedAt || null,
         storage: 'mongodb',
       });
     }
 
     const { content, projects } = req.body || {};
+    const certificates = Array.isArray(req.body?.certificates) ? req.body.certificates : [];
     if (!content || typeof content !== 'object' || Array.isArray(content) || !Array.isArray(projects)) {
       return res.status(400).json({ message: 'Provide portfolio content and a projects array.' });
     }
     const record = await PortfolioRecord.findOneAndUpdate(
       { key: 'primary' },
-      { $set: { content, projects } },
+      { $set: { content, projects, certificates } },
       { upsert: true, new: true, setDefaultsOnInsert: true, runValidators: true },
     ).lean();
     return res.status(200).json({
       initialized: true,
       content: record.content || {},
       projects: Array.isArray(record.projects) ? record.projects : [],
+      certificates: Array.isArray(record.certificates) ? record.certificates : [],
       updatedAt: record.updatedAt || null,
       storage: 'mongodb',
     });

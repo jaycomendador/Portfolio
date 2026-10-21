@@ -33,7 +33,7 @@
 .hero-section{background:#f7f9fc}.nav-links a{position:relative;padding:6px 0;color:#354761;transition:color .25s ease}.nav-links a::after{content:'';position:absolute;right:0;bottom:0;left:0;height:2px;border-radius:99px;background:#2d567f;transform:scaleX(0);transform-origin:right;transition:transform .25s ease}.nav-links a:hover{color:#1d4d78}.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}.dark-mode .nav-links a{color:#a7b5c9}.dark-mode .nav-links a:hover{color:#fff}.dark-mode .nav-links a::after{background:#86b7e7}
 
 /* Smooth movement between navigation sections and on initial load */
-section[id]{scroll-margin-top:68px;animation:section-reveal .55s ease both}.about-section{animation-delay:.05s}.skills-section{animation-delay:.1s}.content-section{animation-delay:.15s}.contact-strip{animation-delay:.2s}@keyframes section-reveal{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+section[id]{scroll-margin-top:68px;animation:section-reveal .55s ease both}.about-section{animation-delay:.05s}.skills-section{animation-delay:.1s}.content-section{animation-delay:.15s}.contact-strip{animation-delay:.2s}@keyframes section-reveal{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 
 /* Light-theme surfaces for Skills and Contact */
 .skills-section{background:#f4f7fc;color:#1d2d42}.skills-section .eyebrow{color:#60738b}.skills-section .section-title span{color:#65768b}.skill-card{background:#fff;border-color:#d4dfec;box-shadow:0 8px 18px #253b5510}.skill-card small{color:#657890}.skill-level{background:#dbe5f0}.contact-strip{background:#e8eef6;color:#22354d}.contact-strip .eyebrow{color:#60738b}.contact-form-layout>div>p:not(.eyebrow){color:#566a82}.contact-form label{color:#465b73}.contact-form input,.contact-form textarea{background:#fff;color:#26394f;border-color:#bfccda}.attachment-field{border-color:#92a4b9}.form-status.success{color:#228454}.form-status.error{color:#c94a4a}.dark-mode .skills-section{background:#050b16;color:#fff}.dark-mode .skills-section .eyebrow{color:#a7b5c9}.dark-mode .skills-section .section-title span{color:#8c98a9}.dark-mode .skill-card{background:#172335;border-color:#45566d;box-shadow:none}.dark-mode .skill-card small{color:#91a1b6}.dark-mode .skill-level{background:#0d1726}.dark-mode .contact-strip{background:#243348;color:#fff}.dark-mode .contact-strip .eyebrow{color:#b4c0d0}.dark-mode .contact-form-layout>div>p:not(.eyebrow){color:#d2dbe7}.dark-mode .contact-form label{color:#dbe5f2}.dark-mode .attachment-field{border-color:#8497b1}.dark-mode .form-status.success{color:#72dda6}.dark-mode .form-status.error{color:#ffaca7}
@@ -55,7 +55,7 @@ section[id]{scroll-margin-top:68px;animation:section-reveal .55s ease both}.abou
 .notification-modal-backdrop{position:fixed;z-index:50;inset:0;display:grid;place-items:center;padding:20px;background:#10192a9c;backdrop-filter:blur(4px)}.notification-modal{width:min(100%,420px);overflow:hidden;border:1px solid #d9e1ee;border-radius:15px;background:#fff;box-shadow:0 22px 60px #09122055}.notification-modal header,.notification-modal footer{display:flex;align-items:center;justify-content:space-between;padding:18px 20px}.notification-modal header{border-bottom:1px solid #e7ecf3}.notification-modal header h2{margin:3px 0 0;color:#263750;font-size:17px}.notification-modal header>button{display:grid;place-items:center;width:30px;height:30px;border:0;border-radius:7px;background:#f1f4f8;color:#586a80;cursor:pointer}.notification-list{max-height:320px;overflow-y:auto}.notification-list article{display:grid;grid-template-columns:auto 1fr;column-gap:5px;padding:13px 20px;border-bottom:1px solid #edf1f6;font-size:11px}.notification-list b{color:#34455f}.notification-list span,.notification-list time{color:#8190a4}.notification-list time{grid-column:1/-1;margin-top:4px;font-size:9px}.notification-empty{display:grid;justify-items:center;gap:7px;padding:42px 20px;color:#8492a5;font-size:11px;text-align:center}.notification-empty svg{color:#6266f4}.notification-empty strong{color:#475a73;font-size:12px}.notification-modal footer{justify-content:flex-end;gap:9px;background:#fafbfe}.dashboard-dark .notification-modal{border-color:#354864;background:#172235}.dashboard-dark .notification-modal header,.dashboard-dark .notification-list article{border-color:#33435b}.dashboard-dark .notification-modal header h2,.dashboard-dark .notification-list b,.dashboard-dark .notification-empty strong{color:#eef3fa}.dashboard-dark .notification-modal header>button,.dashboard-dark .notification-modal footer{background:#111c2f;color:#d2deed}.dashboard-dark .notification-list span,.dashboard-dark .notification-list time,.dashboard-dark .notification-empty{color:#a5b3c8}
 
 /* Animated portrait and alternating card entrances. */
-.standing-figure{animation:character-float 3.2s ease-in-out infinite;transform-origin:center bottom}.sf-head{animation:character-head 1.6s ease-in-out infinite;transform-origin:center bottom}.sf-body{animation:character-body 1.6s ease-in-out infinite;transform-origin:center top}.sf-leg.one{animation:character-step-left 1.6s ease-in-out infinite;transform-origin:center top}.sf-leg.two{animation:character-step-right 1.6s ease-in-out infinite;transform-origin:center top}.skill-card,.work-card,.about-card{animation-duration:.7s;animation-timing-function:cubic-bezier(.22,1,.36,1);animation-fill-mode:both}.skill-card:nth-child(odd),.work-card:nth-child(odd){animation-name:slide-in-left}.skill-card:nth-child(even),.work-card:nth-child(even),.about-card{animation-name:slide-in-right}.skill-card:nth-child(2),.work-card:nth-child(2){animation-delay:.08s}.skill-card:nth-child(3),.work-card:nth-child(3){animation-delay:.16s}.skill-card:nth-child(4),.work-card:nth-child(4){animation-delay:.24s}.skill-card:nth-child(5){animation-delay:.32s}.skill-card:nth-child(6){animation-delay:.4s}.skill-card:nth-child(7){animation-delay:.48s}.skill-card:nth-child(8){animation-delay:.56s}.skill-card:nth-child(9){animation-delay:.64s}.skill-card:nth-child(10){animation-delay:.72s}@keyframes character-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}@keyframes character-head{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}@keyframes character-body{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}@keyframes character-step-left{0%,100%{transform:rotate(4deg)}50%{transform:rotate(-5deg)}}@keyframes character-step-right{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(4deg)}}@keyframes slide-in-left{from{opacity:0;transform:translateX(-34px)}to{opacity:1;transform:translateX(0)}}@keyframes slide-in-right{from{opacity:0;transform:translateX(34px)}to{opacity:1;transform:translateX(0)}}
+.standing-figure{animation:character-float 3.2s ease-in-out infinite;transform-origin:center bottom}.sf-head{animation:character-head 1.6s ease-in-out infinite;transform-origin:center bottom}.sf-body{animation:character-body 1.6s ease-in-out infinite;transform-origin:center top}.sf-leg.one{animation:character-step-left 1.6s ease-in-out infinite;transform-origin:center top}.sf-leg.two{animation:character-step-right 1.6s ease-in-out infinite;transform-origin:center top}.skill-card,.work-card,.about-card{animation-duration:.7s;animation-timing-function:cubic-bezier(.22,1,.36,1);animation-fill-mode:both}.skill-card:nth-child(odd),.work-card:nth-child(odd){animation-name:slide-in-left}.skill-card:nth-child(even),.work-card:nth-child(even),.about-card{animation-name:slide-in-right}.skill-card:nth-child(2),.work-card:nth-child(2){animation-delay:.08s}.skill-card:nth-child(3),.work-card:nth-child(3){animation-delay:.16s}.skill-card:nth-child(4),.work-card:nth-child(4){animation-delay:.24s}.skill-card:nth-child(5){animation-delay:.32s}.skill-card:nth-child(6){animation-delay:.4s}.skill-card:nth-child(7){animation-delay:.48s}.skill-card:nth-child(8){animation-delay:.56s}.skill-card:nth-child(9){animation-delay:.64s}.skill-card:nth-child(10){animation-delay:.72s}@keyframes character-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}@keyframes character-head{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}@keyframes character-body{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}@keyframes character-step-left{0%,100%{transform:rotate(4deg)}50%{transform:rotate(-5deg)}}@keyframes character-step-right{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(4deg)}}@keyframes slide-in-left{from{opacity:0;transform:translateX(-34px)}to{opacity:1;transform:none}}@keyframes slide-in-right{from{opacity:0;transform:translateX(34px)}to{opacity:1;transform:none}}
 .standing-figure:not(.is-visible),.standing-figure:not(.is-visible) .sf-head,.standing-figure:not(.is-visible) .sf-body,.standing-figure:not(.is-visible) .sf-leg,.skill-card:not(.is-visible),.work-card:not(.is-visible),.about-card:not(.is-visible){animation-name:none}.standing-figure.is-visible,.standing-figure.is-visible .sf-head,.standing-figure.is-visible .sf-body,.standing-figure.is-visible .sf-leg,.skill-card.is-visible,.work-card.is-visible,.about-card.is-visible{animation-play-state:running}
 
 /* Looping typewriter treatment for the developer-code card. */
@@ -143,6 +143,18 @@ html,body,#root{width:100%;max-width:100%;min-width:0;margin:0}.portfolio-page{w
 .programming-language-fields input{width:78px}
 .arsenal-column li{display:flex;align-items:center;justify-content:space-between;gap:16px}
 .arsenal-column li small{flex:0 0 auto;color:#8793a5;font-size:11px;font-weight:500}
+.arsenal-heading h2{color:#1d2d42}
+.arsenal-column h3{color:#65768b}
+.arsenal-column li{color:#344256}
+.language-proficiency{color:#46566d}
+.arsenal-column li small,.language-proficiency small{color:#69788c}
+.proficiency-track{background:#dbe5f0}
+.dark-mode .arsenal-heading h2{color:#e6ebf2}
+.dark-mode .arsenal-column h3{color:#8291a8}
+.dark-mode .arsenal-column li{color:#dce2eb}
+.dark-mode .language-proficiency{color:#c8d1de}
+.dark-mode .arsenal-column li small,.dark-mode .language-proficiency small{color:#8793a5}
+.dark-mode .proficiency-track{background:#172131}
 .arsenal-editor-groups{display:grid;gap:14px}
 .arsenal-editor-groups h3{margin:0 0 8px;color:#607089;font-size:10px;letter-spacing:.06em;text-transform:uppercase}
 .dashboard-dark .arsenal-editor-groups h3{color:#9eafc4}
@@ -199,6 +211,14 @@ html,body,#root{width:100%;max-width:100%;min-width:0;margin:0}.portfolio-page{w
 .dark-mode .project-text-heading h3{color:#f1f5fb}
 .dark-mode .project-text-heading span,.dark-mode .project-text-copy p,.dark-mode .project-text-copy small{color:#a6b3c6}
 .dark-mode .project-text-row>a{color:#a9c4e4}
+.project-text-row-link{display:flex;color:inherit;text-decoration:none;transition:background-color .2s ease,padding .2s ease}
+.project-text-row-link:hover{padding-inline:10px;background:#f3f6fa}
+.project-text-row-link .project-open-label{flex:none;display:inline-flex;align-items:center;gap:6px;padding:8px 11px;border:1px solid #cbd4e0;border-radius:7px;background:#fff;color:#405773;font-size:11px;font-weight:700;transition:background-color .2s,border-color .2s,color .2s}
+.project-text-row-link:hover .project-open-label{border-color:#9baabd;background:#edf2f8}
+.dark-mode .project-text-row-link:hover{background:#111c2d}
+.dark-mode .project-text-row-link .project-open-label{border-color:#41536c;background:#17263a;color:#d6e6f8}
+.dark-mode .project-text-row-link:hover .project-open-label{border-color:#70839c;background:#20344f}
+.project-text-row-link:focus-visible{outline:2px solid #7daee0;outline-offset:2px}
 .dark-mode .view-all-projects{color:#e8eef8;border-color:#41536c}
 .dark-mode .view-all-projects:hover{background:#17263a;border-color:#70839c}
 @media(max-width:760px){.projects-shell{padding:18px!important}.project-text-row{align-items:flex-start;gap:10px}.project-text-row>a{font-size:9px}.project-text-heading{flex-wrap:wrap}}
@@ -212,3 +232,124 @@ html,body,#root{width:100%;max-width:100%;min-width:0;margin:0}.portfolio-page{w
 .dark-mode .hero-stats article>div{color:#9cb4d2}
 .dark-mode .hero-stats span{color:#a6b3c6}
 @media(max-width:760px){.hero-stats{width:100%;max-width:390px;margin-top:17px}.hero-stats article{padding:9px 8px}.hero-stats strong{font-size:16px}.hero-stats span{font-size:8px}}
+
+/* Scroll entrances vary by portfolio section. */
+.portfolio-page>section[data-scroll-motion],.github-activity-section[data-scroll-motion]{animation:none;opacity:0}
+.portfolio-page>section[data-scroll-motion].is-visible,.github-activity-section[data-scroll-motion].is-visible{animation-duration:.72s;animation-timing-function:cubic-bezier(.2,.8,.2,1);animation-fill-mode:both}
+.portfolio-page>section[data-scroll-motion="rise"].is-visible,.github-activity-section[data-scroll-motion="rise"].is-visible{animation-name:portfolio-rise}
+.portfolio-page>section[data-scroll-motion="zoom"].is-visible,.github-activity-section[data-scroll-motion="zoom"].is-visible{animation-name:portfolio-zoom}
+.portfolio-page>section[data-scroll-motion="flip"].is-visible,.github-activity-section[data-scroll-motion="flip"].is-visible{animation-name:portfolio-flip}
+.portfolio-page>section[data-scroll-motion="slide"].is-visible,.github-activity-section[data-scroll-motion="slide"].is-visible{animation-name:portfolio-slide}
+@keyframes portfolio-rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes portfolio-zoom{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+@keyframes portfolio-flip{from{opacity:0;transform:perspective(900px) rotateX(7deg) translateY(18px)}to{opacity:1;transform:none}}
+@keyframes portfolio-slide{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
+.skills-section[data-scroll-motion].is-visible .arsenal-column{animation:arsenal-enter .65s both cubic-bezier(.2,.8,.2,1)}
+.skills-section[data-scroll-motion].is-visible .arsenal-column:nth-child(2){animation-delay:.14s}
+@keyframes arsenal-enter{from{opacity:0;transform:translateY(22px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.content-section[data-scroll-motion].is-visible .project-text-row{animation:project-row-enter .55s both cubic-bezier(.2,.8,.2,1)}
+.content-section[data-scroll-motion].is-visible .project-text-row:nth-child(2){animation-delay:.1s}
+.content-section[data-scroll-motion].is-visible .project-text-row:nth-child(3){animation-delay:.2s}
+@keyframes project-row-enter{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:none}}
+.services-section[data-scroll-motion].is-visible .service-card,.certificates-section[data-scroll-motion].is-visible .portfolio-certificate-card,.connect-section[data-scroll-motion].is-visible .connect-card{animation:card-soft-enter .6s both cubic-bezier(.2,.8,.2,1)}
+.services-section[data-scroll-motion].is-visible .service-card:nth-child(2),.certificates-section[data-scroll-motion].is-visible .portfolio-certificate-card:nth-child(2),.connect-section[data-scroll-motion].is-visible .connect-card:nth-child(2){animation-delay:.1s}
+.services-section[data-scroll-motion].is-visible .service-card:nth-child(3),.certificates-section[data-scroll-motion].is-visible .portfolio-certificate-card:nth-child(3),.connect-section[data-scroll-motion].is-visible .connect-card:nth-child(3){animation-delay:.2s}
+@keyframes card-soft-enter{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.dashboard-content>.dashboard-grid,.dashboard-content>.dashboard-panel{animation-duration:.58s;animation-timing-function:cubic-bezier(.2,.8,.2,1);animation-fill-mode:both}
+.dashboard-content[data-page="dashboard"]>.dashboard-grid{animation-name:dashboard-rise}
+.dashboard-content[data-page="projects"]>.dashboard-panel{animation-name:dashboard-slide}
+.dashboard-content[data-page="all-info"]>.dashboard-panel{animation-name:dashboard-fade}
+.dashboard-content[data-page="certificates"]>.dashboard-panel{animation-name:dashboard-zoom}
+.dashboard-content[data-page="messages"]>.dashboard-panel{animation-name:dashboard-turn}
+.dashboard-content[data-page="settings"]>.dashboard-panel{animation-name:dashboard-rise}
+.dashboard-content[data-page="project-form"]>.dashboard-panel{animation-name:dashboard-slide}
+@keyframes dashboard-rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes dashboard-slide{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:none}}
+@keyframes dashboard-fade{from{opacity:0;filter:blur(5px)}to{opacity:1;filter:blur(0)}}
+@keyframes dashboard-zoom{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+@keyframes dashboard-turn{from{opacity:0;transform:perspective(1000px) rotateY(-5deg)}to{opacity:1;transform:perspective(1000px) rotateY(0)}}
+.dashboard-page .dashboard-login-card{animation:login-card-enter .7s both cubic-bezier(.2,.8,.2,1)}
+@keyframes login-card-enter{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.portfolio-page>section[data-scroll-motion],.github-activity-section[data-scroll-motion]{opacity:1!important;animation:none!important}.skills-section[data-scroll-motion].is-visible .arsenal-column,.content-section[data-scroll-motion].is-visible .project-text-row,.services-section[data-scroll-motion].is-visible .service-card,.certificates-section[data-scroll-motion].is-visible .portfolio-certificate-card,.connect-section[data-scroll-motion].is-visible .connect-card,.dashboard-content>.dashboard-grid,.dashboard-content>.dashboard-panel,.dashboard-page .dashboard-login-card{animation:none!important}}
+
+/* Smoothly blend the page palette when the theme toggle is used. */
+.theme-transitioning *, .theme-transitioning *::before, .theme-transitioning *::after{transition-property:color,background-color,border-color,box-shadow,fill,stroke!important;transition-duration:2.5s!important;transition-timing-function:cubic-bezier(.22,.72,.24,1)!important}
+.theme-transitioning .theme-button .theme-indicator,.theme-transitioning .theme-pill .theme-indicator{transition:transform .32s cubic-bezier(.2,.8,.2,1),background .25s!important}
+@media(prefers-reduced-motion:reduce){.theme-transitioning *, .theme-transitioning *::before, .theme-transitioning *::after{transition-duration:.01ms!important}}
+
+/* Reveal the new theme from the center when View Transitions are available. */
+::view-transition-old(root){animation:theme-old-view .18s ease-out both}
+::view-transition-new(root){animation:theme-circle-reveal 2.5s cubic-bezier(.2,.72,.2,1) both}
+@keyframes theme-old-view{to{opacity:.35}}
+@keyframes theme-circle-reveal{from{clip-path:circle(0 at 50% 50%)}to{clip-path:circle(150vmax at 50% 50%)}}
+@media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
+
+/* Colored technology marks beside Arsenal skills. */
+.arsenal-skill-name{display:inline-flex;align-items:center;gap:9px;min-width:0}
+.arsenal-item-icon{display:inline-grid;place-items:center;flex:0 0 18px;width:18px;height:18px;color:var(--skill-icon-color)}
+.arsenal-heading-icon,.arsenal-section-icon{display:inline-grid;place-items:center;vertical-align:-2px}
+.arsenal-heading h2 .arsenal-heading-icon{margin-right:5px;color:#61dafb}
+.arsenal-section-icon{margin-right:4px}
+.arsenal-column h3 .arsenal-section-icon.frontend-icon{color:#38bdf8}
+.arsenal-column h3 .arsenal-section-icon.languages-icon{color:#f0a44b}
+.arsenal-column h3 .arsenal-section-icon.backend-icon{color:#4ade80}
+.arsenal-column h3 .arsenal-section-icon.fullstack-icon{color:#a78bfa}
+.arsenal-column h3 .arsenal-section-icon.design-icon{color:#f472b6}
+.language-proficiency{grid-template-columns:minmax(94px,auto) minmax(70px,1fr) 32px}
+.language-proficiency-name{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.connect-icon-github{color:#f0f6fc}
+.connect-icon-facebook{color:#1877f2}
+.connect-icon-linkedin{color:#0a66c2}
+.connect-icon-instagram{color:#e4405f}
+.connect-icon-phone{color:#22c55e}
+.connect-icon.connect-icon-email svg path{fill:revert}
+
+/* Sticky portfolio information chat. */
+.portfolio-chat-widget{position:fixed;right:22px;bottom:22px;z-index:900;display:flex;flex-direction:column;align-items:flex-end;gap:12px;font-family:'DM Sans',sans-serif}
+.portfolio-chat-toggle{display:grid;place-items:center;width:54px;height:54px;padding:0;border:1px solid #29496d;border-radius:50%;background:#17385d;color:#fff;box-shadow:0 10px 30px #101e3240;cursor:pointer;transition:transform .2s,box-shadow .2s,background-color .2s}
+.portfolio-chat-toggle:hover{transform:translateY(-2px);background:#204a78;box-shadow:0 14px 34px #101e3255}
+.portfolio-chat-toggle:focus-visible,.portfolio-chat-panel button:focus-visible,.portfolio-chat-form input:focus-visible{outline:3px solid #76baff;outline-offset:3px}
+.portfolio-chat-toggle-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#ffffff20;color:#fff}
+.portfolio-chat-panel{display:grid;grid-template-rows:auto minmax(160px,1fr) auto;width:min(360px,calc(100vw - 32px));height:min(440px,calc(100dvh - 120px));overflow:hidden;border:1px solid #d5deea;border-radius:16px;background:#fff;color:#26374e;box-shadow:0 20px 60px #111c2d38;animation:chat-panel-enter .2s ease-out both}
+.portfolio-chat-header{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid #e3e9f0;background:#f7f9fc}
+.portfolio-chat-avatar{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#e2efff;color:#2865a0}
+.portfolio-chat-header>span:nth-child(2){display:grid;gap:2px;flex:1}
+.portfolio-chat-header strong{font-size:12px;color:#1b2b40}
+.portfolio-chat-header small{font-size:10px;color:#718096}
+.portfolio-chat-header button,.portfolio-chat-form button{display:grid;place-items:center;width:32px;height:32px;border:0;border-radius:9px;background:transparent;color:#60728a;cursor:pointer}
+.portfolio-chat-header button:hover{background:#e8edf4}
+.portfolio-chat-messages{display:flex;flex-direction:column;gap:9px;overflow:auto;padding:14px;background:#fff}
+.portfolio-chat-message{max-width:88%;margin:0;padding:9px 11px;border-radius:12px;font-size:11px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+.portfolio-chat-message.bot{animation:chat-reply-enter .28s ease-out both}
+.portfolio-chat-type-cursor{display:inline-block;height:1em;margin-left:2px;border-left:1px solid currentColor;vertical-align:-2px;animation:chat-cursor-blink .75s steps(2,start) infinite}
+.portfolio-chat-message.bot{align-self:flex-start;border-bottom-left-radius:4px;background:#f0f4f9;color:#33445a}
+.portfolio-chat-message.user{align-self:flex-end;border-bottom-right-radius:4px;background:#244b76;color:#fff}
+.portfolio-chat-typing{display:flex;align-items:center;gap:4px;align-self:flex-start;padding:12px 13px;border-radius:12px 12px 12px 4px;background:#f0f4f9}
+.portfolio-chat-typing i{width:5px;height:5px;border-radius:50%;background:#7789a0;animation:chat-typing-dot .9s infinite ease-in-out}
+.portfolio-chat-typing i:nth-child(2){animation-delay:.14s}.portfolio-chat-typing i:nth-child(3){animation-delay:.28s}
+.portfolio-chat-form{display:flex;align-items:center;gap:7px;padding:10px;border-top:1px solid #e3e9f0;background:#fff}
+.portfolio-chat-form input{min-width:0;flex:1;padding:10px 11px;border:1px solid #d5deea;border-radius:9px;background:#fff;color:#233449;font:11px 'DM Sans',sans-serif}
+.portfolio-chat-form input::placeholder{color:#8190a3}
+.portfolio-chat-form button{background:#244b76;color:#fff}
+.portfolio-chat-form button:hover:not(:disabled){background:#326394}
+.portfolio-chat-form button:disabled{opacity:.45;cursor:not-allowed}
+.dark-mode .portfolio-chat-panel{border-color:#31445d;background:#101a29;color:#e6edf7}
+.dark-mode .portfolio-chat-header{border-color:#2c3d54;background:#142238}
+.dark-mode .portfolio-chat-header strong{color:#eef4fb}
+.dark-mode .portfolio-chat-header small{color:#a1b1c7}
+.dark-mode .portfolio-chat-avatar{background:#203c5c;color:#9bcaff}
+.dark-mode .portfolio-chat-header button{color:#b8c6d8}
+.dark-mode .portfolio-chat-header button:hover{background:#263a54}
+.dark-mode .portfolio-chat-messages,.dark-mode .portfolio-chat-form{border-color:#2c3d54;background:#101a29}
+.dark-mode .portfolio-chat-message.bot{background:#1b2a3e;color:#dce6f2}
+.dark-mode .portfolio-chat-typing{background:#1b2a3e}
+.dark-mode .portfolio-chat-typing i{background:#a3b5cc}
+.dark-mode .portfolio-chat-form input{border-color:#40546d;background:#0b1421;color:#edf4fc}
+.dark-mode .portfolio-chat-form input::placeholder{color:#95a6bc}
+.dark-mode .portfolio-chat-form button{background:#284c73;color:#fff}
+@keyframes chat-panel-enter{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes chat-reply-enter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes chat-typing-dot{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-4px);opacity:1}}
+@keyframes chat-cursor-blink{to{visibility:hidden}}
+@media(max-width:500px){.portfolio-chat-widget{right:12px;bottom:12px}.portfolio-chat-panel{height:min(420px,calc(100dvh - 105px));width:calc(100vw - 24px)}}
+@media(prefers-reduced-motion:reduce){.portfolio-chat-panel,.portfolio-chat-message.bot,.portfolio-chat-typing i,.portfolio-chat-type-cursor{animation:none}.portfolio-chat-toggle{transition:none}}
