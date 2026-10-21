@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, Award, Bell, BriefcaseBusiness, FileText, Grid2X2, LogOut, Menu, Search, Settings, X } from 'lucide-react';
 const profile = '/profile.png';
-import { defaultPortfolioContent, fetchPortfolioRecord, loadCertificates, loadPortfolioContent, loadProjects, saveCertificates, savePortfolioContent, savePortfolioRecord, saveProjects } from './portfolioContent';
+import { defaultPortfolioContent, fetchPortfolioRecord, loadCertificates, loadPortfolioContent, loadProjects, mergeProjectDefaults, saveCertificates, savePortfolioContent, savePortfolioRecord, saveProjects } from './portfolioContent';
 import DashboardPage from './pages/DashboardPage';
 import ProjectsPage from './pages/ProjectsPage';
 import PortfolioPage from './pages/PortfolioPage';
@@ -40,8 +40,8 @@ export default function Dashboard() {
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const knownMessageIds = useRef(null);
-  const portfolioSnapshot = useRef({ content, projects });
-  useEffect(() => { portfolioSnapshot.current = { content, projects }; }, [content, projects]);
+  const portfolioSnapshot = useRef({ content, projects, certificates });
+  useEffect(() => { portfolioSnapshot.current = { content, projects, certificates }; }, [content, projects, certificates]);
   useEffect(() => {
     const timer = window.setInterval(() => setCurrentTime(new Date()), 60_000);
     return () => window.clearInterval(timer);
@@ -53,14 +53,17 @@ export default function Dashboard() {
       if (!active) return;
       if (record.initialized) {
         const savedContent = { ...defaultPortfolioContent, ...record.content };
-        const savedProjects = Array.isArray(record.projects) ? record.projects : [];
+        const savedProjects = mergeProjectDefaults(record.projects);
         setContent(savedContent);
         setProjects(savedProjects);
+        const savedCertificates = Array.isArray(record.certificates) && (record.certificates.length > 0 || loadCertificates().length === 0) ? record.certificates : loadCertificates();
+        setCertificates(savedCertificates);
         savePortfolioContent(savedContent);
         saveProjects(savedProjects);
+        saveCertificates(savedCertificates);
         return;
       }
-      const result = await savePortfolioRecord(portfolioSnapshot.current.content, portfolioSnapshot.current.projects);
+      const result = await savePortfolioRecord(portfolioSnapshot.current.content, portfolioSnapshot.current.projects, portfolioSnapshot.current.certificates);
       if (active) setNotice(result.storage === 'mongodb' ? 'Your existing portfolio data has been saved to MongoDB.' : 'Your existing portfolio data has been saved on this server.');
     }).catch(() => {
       if (active) setNotice('The database is unavailable. Changes will stay in this browser until it reconnects.');
@@ -71,7 +74,7 @@ export default function Dashboard() {
   const navigate = (item) => { localStorage.setItem('portfolio-dashboard-page', item); setActive(item); if (item === 'Messages') { setUnreadCount(0); setNotice(null); } };
   const signOut = () => { sessionStorage.removeItem('portfolio-dashboard'); setSignedIn(false); };
   function signIn(e) { e.preventDefault(); if (username === account.username && password === account.password) { sessionStorage.setItem('portfolio-dashboard', 'signed-in'); setSignedIn(true); setMessage(''); } else setMessage('Incorrect username or password.'); }
-  function save(e) { e.preventDefault(); savePortfolioContent(content); saveProjects(projects); setEditing(false); setActive('Dashboard'); setMessage('Changes saved.'); savePortfolioRecord(content, projects).then((result) => setNotice(result.storage === 'mongodb' ? 'Portfolio changes saved to MongoDB.' : 'Portfolio changes saved on this server.')).catch(() => setNotice('Changes are saved in this browser, but the server could not be reached.')); }
+  function save(e) { e.preventDefault(); savePortfolioContent(content); saveProjects(projects); setEditing(false); setActive('Dashboard'); setMessage('Changes saved.'); savePortfolioRecord(content, projects, certificates).then((result) => setNotice(result.storage === 'mongodb' ? 'Portfolio changes saved to MongoDB.' : 'Portfolio changes saved on this server.')).catch(() => setNotice('Changes are saved in this browser, but the server could not be reached.')); }
   const addProject = (project) => {
     const updatedProjects = [project, ...projects];
     setProjects(updatedProjects);
@@ -80,26 +83,46 @@ export default function Dashboard() {
     setContent(updatedContent);
     savePortfolioContent(updatedContent);
     setProjectForm(null);
-    savePortfolioRecord(updatedContent, updatedProjects).then((result) => setNotice(result.storage === 'mongodb' ? 'Project and project count saved to MongoDB.' : 'Project and project count saved on this server.')).catch(() => setNotice('Project is saved in this browser, but the server could not be reached.'));
+    savePortfolioRecord(updatedContent, updatedProjects, certificates).then((result) => setNotice(result.storage === 'mongodb' ? 'Project and project count saved to MongoDB.' : 'Project and project count saved on this server.')).catch(() => setNotice('Project is saved in this browser, but the server could not be reached.'));
   };
   const updateProject = (updatedProject) => {
     const updatedProjects = projects.map((project) => project.id === updatedProject.id ? updatedProject : project);
     setProjects(updatedProjects);
     saveProjects(updatedProjects);
     setProjectForm(null);
-    savePortfolioRecord(content, updatedProjects).then((result) => setNotice(result.storage === 'mongodb' ? 'Project changes saved to MongoDB.' : 'Project changes saved on this server.')).catch(() => setNotice('Project changes are saved in this browser, but the server could not be reached.'));
+    savePortfolioRecord(content, updatedProjects, certificates).then((result) => setNotice(result.storage === 'mongodb' ? 'Project changes saved to MongoDB.' : 'Project changes saved on this server.')).catch(() => setNotice('Project changes are saved in this browser, but the server could not be reached.'));
   };
-  const addCertificate = (certificate) => {
+  const addCertificate = async (certificate) => {
     const updatedCertificates = [certificate, ...certificates];
     saveCertificates(updatedCertificates);
     setCertificates(updatedCertificates);
+    try {
+      const result = await savePortfolioRecord(content, projects, updatedCertificates);
+      setNotice(result.storage === 'mongodb' ? 'Certificate saved to Cloudinary and MongoDB.' : 'Certificate saved to Cloudinary and this server.');
+    } catch {
+      setNotice('Certificate is saved in this browser and on Cloudinary, but portfolio storage could not be reached.');
+    }
   };
-  const deleteCertificate = (id) => {
+  const deleteCertificate = async (id) => {
     const updatedCertificates = certificates.filter((certificate) => certificate.id !== id);
     saveCertificates(updatedCertificates);
     setCertificates(updatedCertificates);
+    try {
+      await savePortfolioRecord(content, projects, updatedCertificates);
+    } catch {
+      setNotice('Certificate removal is saved in this browser, but portfolio storage could not be reached.');
+    }
   };
-  const toggleDarkMode = () => setDarkMode((enabled) => { localStorage.setItem('portfolio-dashboard-theme', enabled ? 'light' : 'dark'); return !enabled; });
+  const toggleDarkMode = () => {
+    const updateTheme = () => setDarkMode((enabled) => { localStorage.setItem('portfolio-dashboard-theme', enabled ? 'light' : 'dark'); return !enabled; });
+    if (document.startViewTransition) {
+      document.startViewTransition(updateTheme);
+    } else {
+      document.documentElement.classList.add('theme-transitioning');
+      updateTheme();
+      window.setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 2500);
+    }
+  };
   useEffect(() => {
     if (!signedIn) return undefined;
     let active = true;
@@ -134,7 +157,7 @@ export default function Dashboard() {
     knownMessageIds.current?.delete(id);
     setMessages((current) => current.filter((item) => item._id !== id));
   };
-  return <main className={darkMode ? 'client-dashboard dashboard-dark' : 'client-dashboard'} id="dashboard"><aside className="dashboard-sidebar"><button className="dashboard-profile" onClick={() => { window.location.href = '/'; }}><img src={profile} alt="Jay Comendador" /><strong>{content.fullName}</strong><span>Portfolio owner</span></button><button type="button" className="dashboard-menu-button" aria-label="Toggle dashboard navigation" aria-expanded={navigationOpen} onClick={() => setNavigationOpen((open) => !open)}>{navigationOpen ? <X size={19} /> : <Menu size={20} />}</button><nav className={navigationOpen ? 'open' : ''}>{nav.map(([item, Icon]) => <button key={item} type="button" className={active === item ? 'active' : ''} onClick={() => { setProjectForm(null); navigate(item); setNavigationOpen(false); }}><Icon size={17} />{item}{item === 'Messages' && messages.length > 0 && <b className="sidebar-count">{messages.length}</b>}</button>)}</nav><button type="button" className="sidebar-help" onClick={() => { window.location.href = 'mailto:jcomendador120@gmail.com?subject=Portfolio%20dashboard%20support'; }}><small>Need help?</small><strong>Contact support</strong></button><button type="button" className="signout-button" onClick={signOut}><LogOut size={16} /> Sign out</button></aside><section className="dashboard-content"><header className="dashboard-header"><h1>{projectForm ? (projectForm.id ? 'Edit project' : 'Add new project') : active === 'Dashboard' ? <>{timeGreeting(currentTime)}, <span>{content.name}</span></> : active}</h1><div><label className="dashboard-search"><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search projects" /></label><button type="button" className="bell-button" aria-label={unreadCount ? `${unreadCount} new messages` : 'Notifications'} onClick={() => setNotificationOpen(true)}><Bell size={19} />{unreadCount > 0 && <b className="notification-count">{unreadCount > 9 ? '9+' : unreadCount}</b>}</button></div></header>{notice && <div className="dashboard-notice">{notice}<button type="button" onClick={() => setNotice(null)} aria-label="Close"><X size={14} /></button></div>}<DashboardBody active={active} content={content} filteredProjects={filteredProjects} certificates={certificates} onAddCertificate={addCertificate} onDeleteCertificate={deleteCertificate} setActive={navigate} edit={() => setEditing(true)} addProject={addProject} updateProject={updateProject} darkMode={darkMode} toggleDarkMode={toggleDarkMode} projectForm={projectForm} openProjectForm={setProjectForm} messages={messages} messagesStatus={messagesStatus} onDeleteMessage={deleteMessage} /></section>{notificationOpen && <NotificationModal notifications={notificationMessages} close={() => setNotificationOpen(false)} viewMessages={() => { setNotificationOpen(false); navigate('Messages'); }} />}{editing && <InformationModal content={content} update={update} save={save} close={() => setEditing(false)} message={message} />}</main>;
+  return <main className={darkMode ? 'client-dashboard dashboard-dark' : 'client-dashboard'} id="dashboard"><aside className="dashboard-sidebar"><button className="dashboard-profile" onClick={() => { window.location.href = '/'; }}><img src={profile} alt="Jay Comendador" /><strong>{content.fullName}</strong><span>Portfolio owner</span></button><button type="button" className="dashboard-menu-button" aria-label="Toggle dashboard navigation" aria-expanded={navigationOpen} onClick={() => setNavigationOpen((open) => !open)}>{navigationOpen ? <X size={19} /> : <Menu size={20} />}</button><nav className={navigationOpen ? 'open' : ''}>{nav.map(([item, Icon]) => <button key={item} type="button" className={active === item ? 'active' : ''} onClick={() => { setProjectForm(null); navigate(item); setNavigationOpen(false); }}><Icon size={17} />{item}{item === 'Messages' && messages.length > 0 && <b className="sidebar-count">{messages.length}</b>}</button>)}</nav><button type="button" className="sidebar-help" onClick={() => { window.location.href = 'mailto:jcomendador120@gmail.com?subject=Portfolio%20dashboard%20support'; }}><small>Need help?</small><strong>Contact support</strong></button><button type="button" className="signout-button" onClick={signOut}><LogOut size={16} /> Sign out</button></aside><section className="dashboard-content" data-page={projectForm ? 'project-form' : active.toLowerCase().replace(/\s+/g, '-')}><header className="dashboard-header"><h1>{projectForm ? (projectForm.id ? 'Edit project' : 'Add new project') : active === 'Dashboard' ? <>{timeGreeting(currentTime)}, <span>{content.name}</span></> : active}</h1><div><label className="dashboard-search"><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search projects" /></label><button type="button" className="bell-button" aria-label={unreadCount ? `${unreadCount} new messages` : 'Notifications'} onClick={() => setNotificationOpen(true)}><Bell size={19} />{unreadCount > 0 && <b className="notification-count">{unreadCount > 9 ? '9+' : unreadCount}</b>}</button></div></header>{notice && <div className="dashboard-notice">{notice}<button type="button" onClick={() => setNotice(null)} aria-label="Close"><X size={14} /></button></div>}<DashboardBody active={active} content={content} filteredProjects={filteredProjects} certificates={certificates} onAddCertificate={addCertificate} onDeleteCertificate={deleteCertificate} setActive={navigate} edit={() => setEditing(true)} addProject={addProject} updateProject={updateProject} darkMode={darkMode} toggleDarkMode={toggleDarkMode} projectForm={projectForm} openProjectForm={setProjectForm} messages={messages} messagesStatus={messagesStatus} onDeleteMessage={deleteMessage} /></section>{notificationOpen && <NotificationModal notifications={notificationMessages} close={() => setNotificationOpen(false)} viewMessages={() => { setNotificationOpen(false); navigate('Messages'); }} />}{editing && <InformationModal content={content} update={update} save={save} close={() => setEditing(false)} message={message} />}</main>;
 }
 
 function DashboardBody({ active, content, filteredProjects, certificates, onAddCertificate, onDeleteCertificate, setActive, edit, addProject, updateProject, darkMode, toggleDarkMode, projectForm, openProjectForm, messages, messagesStatus, onDeleteMessage }) {

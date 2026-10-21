@@ -28,6 +28,7 @@ function serializeRecord(record) {
     initialized: true,
     content: record.content || {},
     projects: Array.isArray(record.projects) ? record.projects : [],
+    certificates: Array.isArray(record.certificates) ? record.certificates : [],
     updatedAt: record.updatedAt || record.savedAt || null,
     storage: 'server-file',
   };
@@ -50,7 +51,7 @@ async function getPortfolioRecord(_req, res, next) {
           }
           await PortfolioRecord.findOneAndUpdate(
             { key: 'primary' },
-            { $set: { content: localRecord.content, projects: localRecord.projects } },
+            { $set: { content: localRecord.content, projects: localRecord.projects, certificates: localRecord.certificates || [] } },
             { upsert: true, new: true, setDefaultsOnInsert: true },
           );
           return res.json(localRecord);
@@ -58,7 +59,7 @@ async function getPortfolioRecord(_req, res, next) {
         if (!localRecord) return res.json({ initialized: false, storage: 'mongodb' });
         await PortfolioRecord.findOneAndUpdate(
           { key: 'primary' },
-          { $set: { content: localRecord.content, projects: localRecord.projects } },
+          { $set: { content: localRecord.content, projects: localRecord.projects, certificates: localRecord.certificates || [] } },
           { upsert: true, new: true, setDefaultsOnInsert: true },
         );
         return res.json(localRecord);
@@ -75,6 +76,7 @@ async function getPortfolioRecord(_req, res, next) {
 async function savePortfolioRecord(req, res, next) {
   try {
     const { content, projects } = req.body || {};
+    const certificates = Array.isArray(req.body?.certificates) ? req.body.certificates : [];
     if (!content || typeof content !== 'object' || Array.isArray(content) || !Array.isArray(projects)) {
       return res.status(400).json({ message: 'Provide portfolio content and a projects array.' });
     }
@@ -83,6 +85,7 @@ async function savePortfolioRecord(req, res, next) {
       initialized: true,
       content,
       projects,
+      certificates,
       updatedAt: new Date().toISOString(),
       storage: 'server-file',
     };
@@ -92,7 +95,7 @@ async function savePortfolioRecord(req, res, next) {
       try {
         await PortfolioRecord.findOneAndUpdate(
           { key: 'primary' },
-          { $set: { content, projects } },
+          { $set: { content, projects, certificates } },
           { upsert: true, new: true, setDefaultsOnInsert: true },
         );
         record.storage = 'mongodb';

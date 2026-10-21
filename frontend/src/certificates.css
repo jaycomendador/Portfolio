@@ -39,3 +39,28 @@
 .dashboard-dark .certificate-manager-actions button{background:#3b232e;color:#ff9aa5}
 @media(max-width:760px){.certificate-grid{grid-template-columns:1fr}.certificates-section{padding:58px 0}}
 @media(max-width:600px){.certificate-upload-form{padding:13px}.portfolio-certificate-card{grid-template-columns:minmax(0,1fr);min-width:0}.portfolio-certificate-preview{min-width:0;min-height:0;max-height:none;padding:8px}.portfolio-certificate-preview img{display:block;width:100%;height:auto;min-height:0;max-height:min(70vh,420px);object-fit:contain}.portfolio-certificate-details{min-width:0;padding:15px}.portfolio-certificate-details h3,.portfolio-certificate-details p{max-width:100%;overflow-wrap:anywhere}.certificate-manager-card{display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:center;gap:9px;padding:9px}.certificate-manager-preview{width:56px;height:48px;flex-basis:56px}.certificate-manager-info strong{white-space:normal;overflow-wrap:anywhere}.certificate-manager-info span{overflow-wrap:anywhere}}
+
+.portfolio-certificate-card.certificate-text-card{width:100%;min-height:146px;grid-template-columns:minmax(0,1fr);align-content:start;gap:9px;padding:20px 22px;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.certificate-text-card:hover{transform:translateY(-3px);border-color:#91a9c5;box-shadow:0 14px 28px #22354d16}
+.certificate-text-card:focus-visible{outline:3px solid #7885f3;outline-offset:3px}
+.certificate-text-card .certificate-text-kicker{display:flex;align-items:center;gap:7px;color:#6266d9;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.certificate-text-card strong{font-size:16px;line-height:1.4}
+.certificate-text-issuer{color:#728096;font-size:11px}
+.certificate-text-open{display:flex;align-items:center;gap:5px;margin-top:6px;color:#5558d8;font-size:10px;font-weight:700}
+.dark-mode .certificate-text-card{background:#172438;border-color:#334861;color:#edf3fb}
+.dark-mode .certificate-text-issuer{color:#a3b2c7}
+.dark-mode .certificate-text-open,.dark-mode .certificate-text-card .certificate-text-kicker{color:#aeb2ff}
+.certificate-modal-backdrop{position:fixed;z-index:80;inset:0;display:grid;place-items:center;padding:20px;background:#07101edb;backdrop-filter:blur(6px)}
+.certificate-modal{display:grid;grid-template-rows:auto minmax(0,1fr) auto;width:min(880px,100%);max-height:calc(100dvh - 40px);overflow:hidden;border:1px solid #36475f;border-radius:16px;background:#111c2d;color:#edf3fb;box-shadow:0 25px 80px #0008;animation:certificate-modal-enter .25s ease-out both}
+.certificate-modal>header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 21px;border-bottom:1px solid #34445a}
+.certificate-modal>header h2{margin:0 0 4px;font-size:19px}
+.certificate-modal>header p:last-child{margin:0;color:#a6b5c8;font-size:11px}
+.certificate-modal>header button{display:grid;place-items:center;width:34px;height:34px;border:1px solid #3c506b;border-radius:9px;background:#1b2a3e;color:#e8eef8;font:inherit;font-size:23px;cursor:pointer}
+.certificate-modal-content{display:grid;place-items:center;min-height:200px;overflow:auto;padding:16px;background:#080e18}
+.certificate-modal-content img{display:block;max-width:100%;max-height:calc(100dvh - 180px);object-fit:contain}
+.certificate-modal-content iframe{width:min(100%,780px);height:min(68vh,760px);border:0;background:#fff}
+.certificate-modal>footer{display:flex;justify-content:flex-end;gap:14px;padding:13px 20px;border-top:1px solid #34445a}
+.certificate-modal>footer a{display:inline-flex;align-items:center;gap:6px;color:#b4cdf1;font-size:11px;font-weight:700}
+@keyframes certificate-modal-enter{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+@media(max-width:600px){.portfolio-certificate-card.certificate-text-card{min-height:0;padding:17px}.certificate-modal-backdrop{padding:10px}.certificate-modal{max-height:calc(100dvh - 20px);border-radius:12px}.certificate-modal>header{padding:15px}.certificate-modal>header h2{font-size:16px}.certificate-modal-content{padding:8px}.certificate-modal-content iframe{height:68vh}.certificate-modal>footer{padding:12px 15px}}
+@media(prefers-reduced-motion:reduce){.certificate-modal{animation:none}.certificate-text-card{transition:none}}

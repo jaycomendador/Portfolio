@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const connectDatabase = require('./config/db');
 const contactRoutes = require('./routes/contactRoutes');
 const portfolioRoutes = require('./routes/portfolioRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 
 const app = express();
 const port = Number(process.env.PORT) || 5000;
@@ -26,6 +27,7 @@ app.get('/api/health', (_req, res) => {
 
 app.use('/api/contact', contactRoutes);
 app.use('/api/portfolio', portfolioRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: `Route not found: ${req.method} ${req.path}` });

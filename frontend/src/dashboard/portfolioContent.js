@@ -29,14 +29,22 @@ export function savePortfolioContent(content) { localStorage.setItem('portfolio-
 export const defaultProjects = [
   { id: 'alerto-calbayog', name: 'AlertoCalbayog', detail: 'Emergency response system', status: 'Live', url: 'https://alertocalbayog.com', technologies: 'React, Node.js, MongoDB', image: alertoCalbayogImage },
   { id: 'fpop-healthhub', name: 'FPOP HealthHub', detail: 'Clinic management platform', status: 'In progress', url: 'https://fpopclinic.com', technologies: 'React, Express, MongoDB', image: fpopClinicImage },
-  { id: 'ayeskeopi', name: 'Ayskeopi', detail: 'Coffee ordering system', status: 'Complete', technologies: 'JavaScript, HTML, CSS', image: ayskeopiImage },
-  { id: 'crms', name: 'CRMS', detail: 'Room maintenance system', status: 'Complete', technologies: 'PHP, MySQL, Bootstrap', image: crmsImage },
+  { id: 'ayeskeopi', name: 'Ayskeopi', detail: 'Coffee ordering system', status: 'Complete', url: 'https://ayskeopi.vercel.app/', technologies: 'JavaScript, HTML, CSS', image: ayskeopiImage },
+  { id: 'crms', name: 'CRMS', detail: 'Room maintenance system', status: 'Complete', url: 'https://crms-rho-weld.vercel.app/', technologies: 'PHP, MySQL, Bootstrap', image: crmsImage },
 ];
+
+export function mergeProjectDefaults(projects) {
+  if (!Array.isArray(projects)) return defaultProjects;
+  return projects.map((project) => {
+    const defaults = defaultProjects.find((item) => item.id === project.id || item.name.toLowerCase() === String(project.name || '').toLowerCase());
+    return defaults && !project.url ? { ...defaults, ...project, url: defaults.url } : project;
+  });
+}
 
 export function loadProjects() {
   try {
     const storedProjects = JSON.parse(localStorage.getItem('portfolio-projects') || 'null');
-    return Array.isArray(storedProjects) ? storedProjects : defaultProjects;
+    return Array.isArray(storedProjects) ? mergeProjectDefaults(storedProjects) : defaultProjects;
   } catch { return defaultProjects; }
 }
 
@@ -48,11 +56,11 @@ export async function fetchPortfolioRecord() {
   return response.json();
 }
 
-export async function savePortfolioRecord(content, projects) {
+export async function savePortfolioRecord(content, projects, certificates = loadCertificates()) {
   const response = await fetch('/api/portfolio', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content, projects }),
+    body: JSON.stringify({ content, projects, certificates }),
   });
   if (!response.ok) {
     const result = await response.json().catch(() => ({}));
