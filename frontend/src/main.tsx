@@ -3,8 +3,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import './certificates.css'
-import App from './App.jsx'
-import Dashboard from './dashboard/Dashboard.jsx'
+import App from './App'
+import Dashboard from './dashboard/Dashboard'
 
 const Page = window.location.pathname === '/dashboard' ? Dashboard : App
 

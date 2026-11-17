@@ -15,10 +15,10 @@
 .github-week{position:relative;display:grid;grid-template-rows:repeat(7,11px);gap:4px;padding-top:16px}
 .github-month-label{position:absolute;top:0;left:0;color:#c9d1d9;font-size:10px;line-height:12px;white-space:nowrap}
 .github-day,.github-legend i{width:11px;height:11px;border:1px solid #1b1f23;border-radius:2px;background:#161b22}
-.github-day.level-1,.github-legend .level-1{background:#0e4429}
-.github-day.level-2,.github-legend .level-2{background:#006d32}
-.github-day.level-3,.github-legend .level-3{background:#26a641}
-.github-day.level-4,.github-legend .level-4{background:#39d353}
+.github-day.level-1,.github-legend .level-1{background:#4a111b}
+.github-day.level-2,.github-legend .level-2{background:#811a29}
+.github-day.level-3,.github-legend .level-3{background:#bf263b}
+.github-day.level-4,.github-legend .level-4{background:#f04458}
 .github-activity-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:13px}
 .github-activity-footer>a{font-size:10px}
 .github-legend{display:flex;align-items:center;gap:4px;color:#8b949e;font-size:10px;white-space:nowrap}
@@ -26,3 +26,28 @@
 .github-activity-message{margin:8px 0;font-size:12px}
 .github-activity-message a{color:#9fb4cb}
 @media(max-width:600px){.github-activity-section{padding:48px 0}.github-contribution-card{padding:15px 13px 12px}.github-activity-heading{align-items:flex-start;flex-direction:column;gap:8px}.github-activity-footer{align-items:flex-start;flex-direction:column}.github-activity-footer .github-legend{align-self:flex-end}}
+
+/* Match the portfolio charcoal and copper palette, with compact contribution text. */
+.portfolio-page .github-activity-section{background:transparent;color:#e9e5df}
+.portfolio-page .github-activity-heading .eyebrow{color:#a79b91}
+.portfolio-page .github-activity-heading>a,.portfolio-page .github-activity-footer>a,.portfolio-page .github-activity-message a{color:#ed7181}
+.portfolio-page .github-activity-heading>a:hover,.portfolio-page .github-activity-footer>a:hover{color:#ff9aaa}
+.portfolio-page .github-contribution-card{border-color:#303238;background:#111316;color:#c6c3bf}
+.portfolio-page .github-activity-summary{margin-bottom:8px;font-size:11px}
+.portfolio-page .github-activity-summary strong{color:#eee9e3}
+.portfolio-page .github-activity-summary span,.portfolio-page .github-activity-message{font-size:10px;color:#928f8b}
+.portfolio-page .github-weekday-labels,.portfolio-page .github-month-label,.portfolio-page .github-legend{font-size:9px}
+.portfolio-page .github-day,.portfolio-page .github-legend i{width:10px;height:10px;border-color:#25282c;border-radius:0}
+.portfolio-page .github-day.level-0,.portfolio-page .github-legend .level-0{background:#171214}
+.portfolio-page .github-day.level-1,.portfolio-page .github-legend .level-1{background:#4a111b}
+.portfolio-page .github-day.level-2,.portfolio-page .github-legend .level-2{background:#811a29}
+.portfolio-page .github-day.level-3,.portfolio-page .github-legend .level-3{background:#bf263b}
+.portfolio-page .github-day.level-4,.portfolio-page .github-legend .level-4{background:#f04458}
+.portfolio-page .github-activity-footer{margin-top:9px}
+.portfolio-page.dark-mode .portfolio-certificate-card.certificate-text-card{border-color:#34363a;background:#17191c;color:#eee8e2}
+.portfolio-page.dark-mode .certificate-text-kicker{color:#d3a087}
+.portfolio-page.dark-mode .certificate-text-issuer{color:#aaa39d}
+.portfolio-page.dark-mode .certificate-text-open{color:#cf9a80}
+.portfolio-page:not(.dark-mode) .portfolio-certificate-card.certificate-text-card{border-color:#d5cec5;background:#f5f2ed;color:#292724}
+.portfolio-page:not(.dark-mode) .certificate-text-kicker,.portfolio-page:not(.dark-mode) .certificate-text-open{color:#985c43}
+.portfolio-page:not(.dark-mode) .certificate-text-issuer{color:#756e67}

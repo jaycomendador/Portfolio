@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import HeroNav from './HeroNav.jsx';
+import HeroNav from './HeroNav';
 import {
   ArrowUpRight,
   Download,
