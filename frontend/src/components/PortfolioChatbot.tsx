@@ -36,16 +36,16 @@ function answerFromPortfolio(question, portfolio) {
   return sections.join('\n\n');
 }
 
+type ChatMessage = { id: number | string; from: 'bot' | 'user'; text: string };
+
 const welcome = 'Hi! Ask me about Jay’s background, skills, projects, certificates, or contact details.';
 
 function TypewriterMessage({ message }) {
   const [visibleText, setVisibleText] = useState('');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   useEffect(() => {
     const characters = Array.from(message.text);
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setVisibleText(message.text);
-      return undefined;
-    }
+    if (prefersReducedMotion) return undefined;
     let position = 0;
     const timer = window.setInterval(() => {
       position += 1;
@@ -53,16 +53,17 @@ function TypewriterMessage({ message }) {
       if (position >= characters.length) window.clearInterval(timer);
     }, 18);
     return () => window.clearInterval(timer);
-  }, [message.id, message.text]);
+  }, [message.id, message.text, prefersReducedMotion]);
 
-  const isTyping = visibleText.length < message.text.length;
-  return <p className={`portfolio-chat-message ${message.from}`}>{visibleText}{isTyping && <span className="portfolio-chat-type-cursor" aria-hidden="true" />}</p>;
+  const displayedText = prefersReducedMotion ? message.text : visibleText;
+  const isTyping = displayedText.length < message.text.length;
+  return <p className={`portfolio-chat-message ${message.from}`}>{displayedText}{isTyping && <span className="portfolio-chat-type-cursor" aria-hidden="true" />}</p>;
 }
 
 export default function PortfolioChatbot({ content, projects, certificates }) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState('');
-  const [messages, setMessages] = useState([{ id: 0, from: 'bot', text: welcome }]);
+  const [messages, setMessages] = useState<ChatMessage[]>([{ id: 0, from: 'bot', text: welcome }]);
   const [isTyping, setIsTyping] = useState(false);
   const messageList = useRef(null);
   const input = useRef(null);
@@ -130,7 +131,7 @@ export default function PortfolioChatbot({ content, projects, certificates }) {
       if (!response.ok) throw new Error(result.message || 'The AI assistant is temporarily unavailable. Please try again shortly.');
       if (typeof result.reply !== 'string' || !result.reply.trim()) throw new Error('The AI assistant returned an empty reply. Please try again.');
       setMessages((current) => [...current, { id: `${now}-reply`, from: 'bot', text: result.reply }]);
-    } catch (error) {
+    } catch {
       setMessages((current) => [...current, { id: `${now}-reply`, from: 'bot', text: answerFromPortfolio(question, portfolio) }]);
     } finally {
       setIsTyping(false);
