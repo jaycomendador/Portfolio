@@ -596,9 +596,9 @@ const ElectricLogo = ({
   cursorIntensity = 0.75,
   cursorRadius = 100,
   theme = 'dark',
-  onRender,
+  onRender = undefined,
   className = '',
-  style
+  style = {}
 }) => {
   const containerRef = useRef(null);
   const settingsRef = useRef(null);
