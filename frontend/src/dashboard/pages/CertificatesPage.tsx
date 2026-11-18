@@ -53,7 +53,7 @@ export default function CertificatesPage({ certificates, onAdd, onDelete }) {
     <div className="certificate-manager-list">{certificates.length ? certificates.map((certificate) => <article className="certificate-manager-card" key={certificate.id}>
       {certificate.fileType === 'application/pdf' ? <div className="certificate-manager-preview pdf"><FileText size={28} /><span>PDF</span></div> : <img className="certificate-manager-preview" src={certificate.fileData} alt="" />}
       <div className="certificate-manager-info"><strong>{certificate.title}</strong><span>{certificate.issuer}{certificate.issued ? ` · ${certificate.issued}` : ''}</span></div>
-      <div className="certificate-manager-actions">{certificate.credentialUrl && <a href={certificate.credentialUrl} target="_blank" rel="noreferrer" aria-label={`Open ${certificate.title} credential`}><ExternalLink size={15} /></a>}<button type="button" onClick={() => onDelete(certificate.id)} aria-label={`Delete ${certificate.title}`}><Trash2 size={15} /></button></div>
+      <div className="certificate-manager-actions">{certificate.credentialUrl && <a href={certificate.credentialUrl} target="_blank" rel="noreferrer" aria-label={`Open ${certificate.title} credential`}><ExternalLink size={15} /></a>}{certificate.isHardcoded ? <small>Built in</small> : <button type="button" onClick={() => onDelete(certificate.id)} aria-label={`Delete ${certificate.title}`}><Trash2 size={15} /></button>}</div>
     </article>) : <div className="empty-state"><Award size={25} /><strong>No certificates yet</strong><span>Upload one above and it will appear on your portfolio.</span></div>}</div>
   </section>;
 }

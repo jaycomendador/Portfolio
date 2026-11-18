@@ -35,6 +35,10 @@ function normalizePortfolioAge(content) {
 }
 
 export const defaultProjects = [
+  { id: 'bizzpredict', name: 'BizzPredict', detail: 'Business prediction project.' },
+  { id: 'laundry-app', name: 'Laundry App', detail: 'Laundry service application.' },
+  { id: 'boardlinker', name: 'BoardLinker', detail: 'BoardLinker project.' },
+  { id: 'ligtas-calbayog', name: 'Ligtas Calbayog', detail: 'Calbayog safety project.' },
   { id: 'alerto-calbayog', name: 'AlertoCalbayog', detail: 'Emergency response system', status: 'Live', url: 'https://alertocalbayog.com', technologies: 'React, Node.js, MongoDB', image: alertoCalbayogImage },
   { id: 'fpop-healthhub', name: 'FPOP HealthHub', detail: 'Clinic management platform', status: 'In progress', url: 'https://fpopclinic.com', technologies: 'React, Express, MongoDB', image: fpopClinicImage },
   { id: 'ayeskeopi', name: 'Ayskeopi', detail: 'Coffee ordering system', status: 'Complete', url: 'https://ayskeopi.vercel.app/', technologies: 'JavaScript, HTML, CSS', image: ayskeopiImage },
@@ -42,11 +46,14 @@ export const defaultProjects = [
 ];
 
 export function mergeProjectDefaults(projects) {
-  if (!Array.isArray(projects)) return defaultProjects;
-  return projects.map((project) => {
+  const savedProjects = Array.isArray(projects) ? projects : [];
+  const mergedProjects = savedProjects.map((project) => {
     const defaults = defaultProjects.find((item) => item.id === project.id || item.name.toLowerCase() === String(project.name || '').toLowerCase());
-    return defaults && !project.url ? { ...defaults, ...project, url: defaults.url } : project;
+    return defaults ? { ...defaults, ...project, url: project.url || defaults.url, image: project.image || defaults.image } : project;
   });
+  const includedIds = new Set(mergedProjects.map((project) => project.id).filter(Boolean));
+  const includedNames = new Set(mergedProjects.map((project) => String(project.name || '').toLowerCase()));
+  return [...mergedProjects, ...defaultProjects.filter((project) => !includedIds.has(project.id) && !includedNames.has(project.name.toLowerCase()))];
 }
 
 export function loadProjects() {
@@ -82,8 +89,28 @@ export async function savePortfolioRecord(content, projects, certificates = load
 export function loadCertificates() {
   try {
     const certificates = JSON.parse(localStorage.getItem('portfolio-certificates') || '[]');
-    return Array.isArray(certificates) ? certificates : [];
-  } catch { return []; }
+    return mergeCertificateDefaults(certificates);
+  } catch { return mergeCertificateDefaults([]); }
+}
+
+export const defaultCertificates = [
+  {
+    id: 'own-it-ccis-ip-bootcamp-2026',
+    title: 'OWN IT: The CCIS Intellectual Property Bootcamp',
+    issuer: 'Northwest Samar State University · College of Computing and Information Sciences',
+    issued: '2026-09',
+    credentialUrl: '',
+    isHardcoded: true,
+    fileName: '7ff5fb97-5797-4f6f-94c8-d3726601ba01.jfif',
+    fileType: 'image/jpeg',
+    fileData: '/7ff5fb97-5797-4f6f-94c8-d3726601ba01.jfif',
+  },
+];
+
+export function mergeCertificateDefaults(certificates) {
+  const savedCertificates = Array.isArray(certificates) ? certificates : [];
+  const savedIds = new Set(savedCertificates.map((certificate) => certificate.id));
+  return [...defaultCertificates.filter((certificate) => !savedIds.has(certificate.id)), ...savedCertificates];
 }
 
 export function saveCertificates(certificates) {

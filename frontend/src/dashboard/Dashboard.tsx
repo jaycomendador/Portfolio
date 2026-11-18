@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowLeft, Award, Bell, BriefcaseBusiness, FileText, Grid2X2, LogOut, Menu, Search, Settings, X } from 'lucide-react';
 const profile = '/profile.png';
-import { defaultPortfolioContent, fetchPortfolioRecord, loadCertificates, loadPortfolioContent, loadProjects, mergeProjectDefaults, saveCertificates, savePortfolioContent, savePortfolioRecord, saveProjects } from './portfolioContent';
+import { defaultPortfolioContent, fetchPortfolioRecord, loadCertificates, loadPortfolioContent, loadProjects, mergeCertificateDefaults, mergeProjectDefaults, saveCertificates, savePortfolioContent, savePortfolioRecord, saveProjects } from './portfolioContent';
 import DashboardPage from './pages/DashboardPage';
 import ProjectsPage from './pages/ProjectsPage';
 import PortfolioPage from './pages/PortfolioPage';
@@ -57,7 +57,7 @@ export default function Dashboard() {
         const savedProjects = mergeProjectDefaults(record.projects);
         setContent(savedContent);
         setProjects(savedProjects);
-        const savedCertificates = Array.isArray(record.certificates) && (record.certificates.length > 0 || loadCertificates().length === 0) ? record.certificates : loadCertificates();
+        const savedCertificates = mergeCertificateDefaults(Array.isArray(record.certificates) ? record.certificates : loadCertificates());
         setCertificates(savedCertificates);
         savePortfolioContent(savedContent);
         saveProjects(savedProjects);
