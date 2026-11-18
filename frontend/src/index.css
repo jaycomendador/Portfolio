@@ -1235,3 +1235,48 @@ html{scroll-padding-top:76px}
 .portfolio-page .hero-section{min-height:100svh;padding-top:76px}
 .portfolio-page .hero{min-height:calc(100svh - 76px);padding-top:clamp(24px,5vw,56px)}
 @media(max-width:760px){.portfolio-page>.site-header{height:66px}.portfolio-page .hero-section{min-height:100svh;padding-top:66px}.portfolio-page .hero{min-height:calc(100svh - 66px);padding-top:24px}}
+
+/* Keep the portfolio dark without the decorative hex wallpaper. */
+.portfolio-page{position:relative;isolation:isolate;background:#090909!important;background-image:none!important;background-attachment:scroll!important}
+.portfolio-page>section,.portfolio-page .certificates-section,.portfolio-page .github-activity-section,.portfolio-page>.site-footer{background:transparent!important}
+
+/* Responsive hero: hide the portrait and layer the 3D atom behind the introduction. */
+@media(max-width:760px){
+  .portfolio-page .about-portrait{display:none!important}
+  .portfolio-page .about-grid{grid-template-columns:minmax(0,1fr)!important;gap:0}
+  .portfolio-page .hero{position:relative;display:block;isolation:isolate;min-height:calc(100svh - 66px);padding:clamp(40px,9vh,76px) clamp(20px,7vw,48px) 30px}
+  .portfolio-page .hero-copy{position:relative;z-index:2;width:min(100%,620px);max-width:620px;padding:20px 0}
+  .portfolio-page .portfolio-world.react-atom-scene{position:absolute;z-index:0;inset:0;width:100%;height:100%;min-height:0;max-width:none;margin:0;opacity:.3;pointer-events:none;overflow:hidden}
+  .portfolio-page .hero-scroll-object{width:min(90vw,440px);max-width:100%;opacity:.92}
+  .portfolio-page .hero-copy::before{position:absolute;z-index:-1;inset:-20px -18px;content:"";pointer-events:none;background:linear-gradient(90deg,#090909ed 0%,#090909c9 62%,#09090945 100%);filter:blur(12px)}
+}
+@media(max-width:480px){
+  .portfolio-page .hero{padding-inline:20px}
+  .portfolio-page .portfolio-world.react-atom-scene{opacity:.25}
+  .portfolio-page .hero-copy::before{inset:-16px -12px;background:linear-gradient(90deg,#090909f2 0%,#090909d6 72%,#09090960 100%)}
+}
+
+/* Remove the oversized decorative ellipse around the hero artwork. */
+.portfolio-page .hero-section::before,.portfolio-page .hero-section::after{content:none!important;display:none!important}
+
+/* Contact details use the available width at every viewport without overflowing. */
+@media(max-width:760px){
+  .portfolio-page .connect-section>.shell{width:100%!important;max-width:none!important;min-width:0;box-sizing:border-box;padding-inline:clamp(16px,4vw,28px)!important;grid-template-columns:minmax(0,1fr)!important}
+  .portfolio-page .connect-heading,.portfolio-page .reference-contact-form,.portfolio-page .connect-grid{width:100%;min-width:0;max-width:100%;grid-column:1;grid-row:auto!important}
+  .portfolio-page .connect-grid{grid-template-columns:minmax(0,1fr);gap:10px}
+  .portfolio-page .connect-card{width:100%;min-width:0;max-width:100%;box-sizing:border-box;grid-template-columns:34px minmax(0,1fr) 16px;gap:10px;padding:12px}
+  .portfolio-page .connect-card>span:nth-child(2){min-width:0;overflow:hidden}
+  .portfolio-page .connect-card small{overflow-wrap:anywhere;word-break:break-word}
+  .portfolio-page .reference-contact-form input,.portfolio-page .reference-contact-form textarea{width:100%;min-width:0;max-width:100%;box-sizing:border-box}
+  .portfolio-page .services-section>.shell{width:100%!important;max-width:none!important;min-width:0;box-sizing:border-box;padding-inline:clamp(16px,4vw,28px)!important}
+  .portfolio-page .services-grid{display:grid!important;width:100%;min-width:0;grid-template-columns:minmax(0,1fr)!important}
+  .portfolio-page .service-card{grid-column:1/-1!important;width:100%;min-width:0;max-width:none;box-sizing:border-box}
+  .portfolio-page .services-cta{width:100%;box-sizing:border-box}
+}
+
+/* Keep service cards full-row on wider tablet layouts as well. */
+@media(min-width:761px) and (max-width:1100px){
+  .portfolio-page .services-section>.shell{width:100%;max-width:none;padding-inline:clamp(24px,5vw,56px)}
+  .portfolio-page .services-grid{grid-template-columns:minmax(0,1fr)}
+  .portfolio-page .service-card{grid-column:1;width:100%;min-width:0}
+}
