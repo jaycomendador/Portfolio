@@ -1280,3 +1280,14 @@ html{scroll-padding-top:76px}
   .portfolio-page .services-grid{grid-template-columns:minmax(0,1fr)}
   .portfolio-page .service-card{grid-column:1;width:100%;min-width:0}
 }
+
+/* Branded first-load screen. */
+.portfolio-loader{position:fixed;z-index:10000;inset:0;display:grid;place-content:center;justify-items:center;gap:13px;background:#090909;color:#f1ece7;animation:portfolio-loader-enter .35s ease-out both}
+.portfolio-loader-icon{display:grid;width:58px;height:58px;place-items:center;margin-bottom:4px;border:1px solid #d9775755;color:#e69678;box-shadow:0 0 34px #d9775718}
+.portfolio-loader-label{color:#d97757;font:10px 'JetBrains Mono',monospace;letter-spacing:.2em}
+.portfolio-loader strong{font-family:Outfit,sans-serif;font-size:16px;font-weight:500;letter-spacing:.02em}
+.portfolio-loader-track{width:150px;height:2px;margin-top:3px;overflow:hidden;background:#ffffff1a}
+.portfolio-loader-track span{display:block;width:100%;height:100%;background:#d97757;transform:scaleX(0);transform-origin:left;animation:portfolio-loader-progress 1.2s ease-in-out forwards}
+@keyframes portfolio-loader-enter{from{opacity:0}to{opacity:1}}
+@keyframes portfolio-loader-progress{to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){.portfolio-loader,.portfolio-loader-track span{animation-duration:.01ms!important}}
