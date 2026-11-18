@@ -1050,7 +1050,7 @@ html{scroll-padding-top:76px}
 .portfolio-page .site-footer.shell{display:block;width:calc(100% - 32px);max-width:none;margin:28px 16px 0;padding:clamp(32px,5vw,64px) clamp(22px,5vw,64px) 18px;border:1px solid #ffffff14;border-bottom:0;border-radius:18px 18px 0 0;background:repeating-linear-gradient(90deg,transparent 0 11%,#ffffff03 11% 22%),linear-gradient(145deg,#17191b,#111315);color:#d9d7d2;font-size:13px}
 .portfolio-page .footer-main{display:grid;grid-template-columns:minmax(260px,1.75fr) repeat(3,minmax(100px,.8fr));gap:clamp(24px,5vw,72px);padding-bottom:42px}
 .portfolio-page .footer-brand{display:inline-flex;align-items:center;gap:10px;color:#f5f3ef;font-family:Outfit,sans-serif;font-size:22px;font-weight:700;letter-spacing:-.04em}
-.portfolio-page .footer-brand svg{color:#d97757}
+.portfolio-page .footer-brand img{width:42px;height:42px;object-fit:contain}
 .portfolio-page .footer-brand-column>p{max-width:390px;margin:22px 0 26px;color:#b2b0ac;font-size:14px;line-height:1.75}
 .portfolio-page .footer-socials{display:flex;align-items:center;gap:10px}
 .portfolio-page .footer-socials a{display:grid;width:40px;height:40px;place-items:center;border:1px solid #ffffff0e;border-radius:50%;background:#ffffff0c;color:#d8d6d2;transition:background .2s,color .2s,transform .2s}

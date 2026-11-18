@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import { ArrowRight, Atom, Award, BriefcaseBusiness, Braces, ChevronRight, Code2, Coffee, Database, ExternalLink, FileText, GitBranch, Globe2, Layers, LayoutDashboard, Leaf, Menu, Palette, PanelsTopLeft, Phone, Server, UsersRound, X, Monitor, Smartphone, PenTool } from 'lucide-react';
 import GitHubContributions from './components/GitHubContributions';
 import ElectricLogo from './components/ElectricLogo';
-import { fetchPortfolioRecord, loadCertificates, loadPortfolioContent, loadProjects, mergeProjectDefaults, saveCertificates, savePortfolioContent, saveProjects } from './dashboard/portfolioContent';
+import { fetchPortfolioRecord, loadCertificates, loadPortfolioContent, loadProjects, mergeCertificateDefaults, mergeProjectDefaults, saveCertificates, savePortfolioContent, saveProjects } from './dashboard/portfolioContent';
 
 const GitHubIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.5a10.5 10.5 0 0 0-3.32 20.46c.52.1.72-.22.72-.5v-1.96c-2.93.64-3.55-1.24-3.55-1.24-.48-1.22-1.17-1.55-1.17-1.55-.96-.65.07-.64.07-.64 1.06.08 1.62 1.09 1.62 1.09.94 1.61 2.47 1.14 3.07.87.1-.68.37-1.14.67-1.4-2.34-.27-4.8-1.17-4.8-5.2 0-1.15.41-2.09 1.08-2.83-.11-.27-.47-1.34.1-2.8 0 0 .88-.28 2.89 1.08A10 10 0 0 1 12 8.14c.9 0 1.8.12 2.64.36 2.01-1.36 2.89-1.08 2.89-1.08.57 1.46.21 2.53.1 2.8.67.74 1.08 1.68 1.08 2.83 0 4.04-2.47 4.92-4.82 5.18.38.33.72.97.72 1.96v2.9c0 .28.19.61.73.5A10.5 10.5 0 0 0 12 1.5Z" /></svg>;
 const FacebookIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.87.24-1.46 1.5-1.46h1.6V3.96c-.28-.04-1.22-.12-2.32-.12-2.3 0-3.88 1.4-3.88 3.98V10H7.8v3h2.6v8h3.1Z" /></svg>;
@@ -87,9 +87,10 @@ export default function App() {
       setPortfolioContent(record.content);
       const updatedProjects = mergeProjectDefaults(record.projects);
       setProjects(updatedProjects);
-      if (Array.isArray(record.certificates) && (record.certificates.length > 0 || loadCertificates().length === 0)) {
-        setCertificates(record.certificates);
-        saveCertificates(record.certificates);
+      if (Array.isArray(record.certificates)) {
+        const updatedCertificates = mergeCertificateDefaults(record.certificates);
+        setCertificates(updatedCertificates);
+        saveCertificates(updatedCertificates);
       }
       savePortfolioContent(record.content);
       saveProjects(updatedProjects);
@@ -242,7 +243,7 @@ export default function App() {
       <section className="connect-section" id="connect"><div className="shell"><div className="connect-heading"><h2><span></span>Contact</h2><small>/contact</small></div><ContactForm email={portfolioContent.email} /><div className="connect-grid"><a className="connect-card" href="https://github.com/jaycomendador" target="_blank" rel="noreferrer"><span className="connect-icon connect-icon-github"><GitHubIcon /></span><span><strong>GitHub</strong><small>jaycomendador</small></span><ExternalLink size={14} /></a><a className="connect-card" href="https://mail.google.com/mail/?view=cm&fs=1&to=Jcomendador120%40gmail.com" target="_blank" rel="noreferrer"><span className="connect-icon connect-icon-email"><GmailIcon /></span><span><strong>Email</strong><small>Jcomendador120@gmail.com</small></span><ExternalLink size={14} /></a><a className="connect-card" href="tel:+639626317088"><span className="connect-icon connect-icon-phone"><Phone size={21} /></span><span><strong>Phone</strong><small>+63 962 631 7088</small></span><ArrowRight size={14} /></a><a className="connect-card" href="https://www.facebook.com/jay.comendador.92" target="_blank" rel="noreferrer"><span className="connect-icon connect-icon-facebook"><FacebookIcon /></span><span><strong>Facebook</strong><small>Connect with me</small></span><ExternalLink size={14} /></a><a className="connect-card" href="https://www.linkedin.com/in/jay-comendador-b81074313" target="_blank" rel="noreferrer"><span className="connect-icon connect-icon-linkedin"><LinkedInIcon /></span><span><strong>LinkedIn</strong><small>Connect with me</small></span><ExternalLink size={14} /></a><a className="connect-card" href="https://www.instagram.com/mr_yajz/?hl=en" target="_blank" rel="noreferrer"><span className="connect-icon connect-icon-instagram"><InstagramIcon /></span><span><strong>Instagram</strong><small>@mr_yajz</small></span><ExternalLink size={14} /></a></div></div></section>      <footer className="site-footer shell">
         <div className="footer-main">
           <div className="footer-brand-column">
-            <a className="footer-brand" href="#home"><Atom size={25} aria-hidden="true" /><span>{portfolioContent.name}</span></a>
+            <a className="footer-brand" href="#home"><img src="/Glossy Black and Gold JC Monogram.png" alt="" aria-hidden="true" /><span>{portfolioContent.name}</span></a>
 
             <div className="footer-socials" aria-label="Social links">
               <a href="https://github.com/jaycomendador" target="_blank" rel="noreferrer" aria-label="GitHub"><GitHubIcon /></a>
@@ -265,7 +266,6 @@ export default function App() {
           <nav className="footer-link-column" aria-label="Resources">
             <h3>Resources</h3>
             <a href="/resume.pdf" target="_blank" rel="noreferrer">Resume</a>
-            <a href="/dashboard">Dashboard</a>
             <a href="#home">Back to top</a>
           </nav>
         </div>
