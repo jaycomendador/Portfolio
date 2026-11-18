@@ -22,6 +22,7 @@ function AnimatedName({ name }: { name: string }) { return <span className="inte
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeSection, setActiveSection] = useState('home');
   // The public site intentionally opens in its dark presentation.
   const darkMode = true;
@@ -33,6 +34,23 @@ export default function App() {
   const projectListRef = useRef<HTMLDivElement>(null);
   const projectDragRef = useRef<{ startX: number; scrollLeft: number; pointerId: number; moved: boolean } | null>(null);
   const draggedProjectRef = useRef(false);
+  useEffect(() => {
+    let revealTimer: number;
+    const finishLoading = () => {
+      window.clearTimeout(revealTimer);
+      revealTimer = window.setTimeout(() => setIsLoading(false), 450);
+    };
+    if (document.readyState === 'complete') {
+      revealTimer = window.setTimeout(() => setIsLoading(false), 650);
+    } else {
+      window.addEventListener('load', finishLoading, { once: true });
+      revealTimer = window.setTimeout(() => setIsLoading(false), 1800);
+    }
+    return () => {
+      window.clearTimeout(revealTimer);
+      window.removeEventListener('load', finishLoading);
+    };
+  }, []);
   const beginProjectDrag = (event) => {
     if (event.pointerType === 'mouse' && event.button !== 0 || (event.target as HTMLElement).closest('a, button')) return;
     const list = projectListRef.current;
@@ -149,7 +167,8 @@ export default function App() {
   const marqueePercent = (skill: string) => programmingLanguagePercentages[skill] ?? arsenalLevels[skill] ?? 0;
   const arsenalLevels = { 'MERN Stack': 70, HTML5: 85, CSS3: 80, 'React.js': 70, 'Node.js': 65, 'React Native': 50, 'REST APIs': 50, 'Git/GitHub': 46, Figma: 49, MySQL: 80, PHP: 55, MongoDB: 70, ...portfolioContent.arsenalLevels };
   return (
-    <main className={darkMode ? 'portfolio-page dark-mode' : 'portfolio-page'}>
+    <main className={darkMode ? 'portfolio-page dark-mode' : 'portfolio-page'} aria-busy={isLoading}>
+      {isLoading && <div className="portfolio-loader" role="status" aria-label="Loading portfolio"><div className="portfolio-loader-icon"><Atom size={28} strokeWidth={1.4} /></div><span className="portfolio-loader-label">JAY COMENDADOR</span><strong>Loading portfolio</strong><div className="portfolio-loader-track" aria-hidden="true"><span /></div></div>}
       <header className="site-header shell">
           <a className="brand" href="#home"><img src="/Glossy%20Black%20and%20Gold%20JC%20Monogram.png" alt="" /><span>Portfolio</span></a>
           <nav className={menuOpen ? 'nav-links open' : 'nav-links'}>{links.map(([label, href]) => <a onClick={() => setMenuOpen(false)} href={href} key={label} className={activeSection === href.slice(1) ? 'active' : ''} aria-current={activeSection === href.slice(1) ? 'location' : undefined}>{label}</a>)}</nav>
