@@ -159,7 +159,7 @@ export default function App() {
   const fullStackSkills = ['MERN Stack'];
   const backendSkills = ['Node.js', 'REST APIs', 'MySQL', 'PHP', 'MongoDB'];
   const visibleProjects = projects;
-  const carouselProjects = [...visibleProjects.map((project) => ({ project, copy: 'original' })), ...visibleProjects.map((project) => ({ project, copy: 'clone' }))];
+  const carouselProjects = visibleProjects;
   const clientCount = Math.max(0, Number.parseInt(portfolioContent.clients, 10) || 0);
   const deployedWebsiteCount = projects.filter((project) => typeof project?.status === 'string' && project.status.toLowerCase() === 'live' && /^https?:\/\//i.test(project.url || '')).length;
   const programmingLanguages = Object.entries({ Java: 50, Python: 50, ...portfolioContent.programmingLanguageLevels });
@@ -194,21 +194,19 @@ export default function App() {
       <section className="content-section" id="works">
         <div className="shell projects-shell">
           <div className="projects-heading-row"><div className="section-title"><p className="eyebrow">SELECTED WORK</p><h2>Recent Projects</h2></div></div>
-          <div className="project-text-list" id="project-list" ref={projectListRef} onPointerDown={beginProjectDrag} onPointerMove={moveProjectDrag} onPointerUp={endProjectDrag} onPointerCancel={endProjectDrag} aria-label="Recent projects. The gallery moves continuously. Drag or swipe to browse projects.">
-            <div className="project-marquee-track" style={{ '--project-loop-duration': `${Math.max(24, visibleProjects.length * 11)}s` } as CSSProperties}>
-            {carouselProjects.map(({ project, copy }) => {
+          <div className="project-text-list" id="project-list" ref={projectListRef} onPointerDown={beginProjectDrag} onPointerMove={moveProjectDrag} onPointerUp={endProjectDrag} onPointerCancel={endProjectDrag} aria-label="Recent projects. Drag or swipe left and right to browse all projects.">
+            {carouselProjects.map((project) => {
               const liveUrl = /^https?:\/\//i.test(project.url || '') ? project.url : '';
               const openDetails = () => {
                 if (draggedProjectRef.current) { draggedProjectRef.current = false; return; }
                 setSelectedProject(project);
               };
-              return <article className="project-text-row project-card-interactive" key={`${copy}-${project.id || project.name}`} data-project-copy={copy} role="button" tabIndex={copy === 'original' ? 0 : -1} aria-hidden={copy === 'clone' ? true : undefined} aria-label={`View details for ${project.name}`} onClick={openDetails} onKeyDown={(event) => { if ((event.target as HTMLElement).closest('a, button')) return; if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setSelectedProject(project); } }}>
+              return <article className="project-text-row project-card-interactive" key={project.id || project.name} role="button" tabIndex={0} aria-label={`View details for ${project.name}`} onClick={openDetails} onKeyDown={(event) => { if ((event.target as HTMLElement).closest('a, button')) return; if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setSelectedProject(project); } }}>
                 <div className="project-preview">{project.image && <img src={project.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; event.currentTarget.parentElement?.querySelector('.project-no-image')?.classList.add('is-visible'); }} />}<span className={`project-no-image${project.image ? '' : ' is-visible'}`} aria-hidden="true"><Code2 size={44} strokeWidth={1.25} /></span></div>
                 <div className="project-gallery-copy"><div className="project-text-heading"><h3>{project.name}</h3>{project.status && <span>{project.status}</span>}</div><p>{project.detail || 'Project details coming soon.'}</p>{project.technologies && <small>{project.technologies}</small>}</div>
-                {liveUrl ? <a className="project-open-label" href={liveUrl} target="_blank" rel="noopener noreferrer" tabIndex={copy === 'clone' ? -1 : undefined} onClick={(event) => event.stopPropagation()} aria-label={`View ${project.name} project`}>View project <ArrowRight size={14} /></a> : <button className="project-open-label" type="button" tabIndex={copy === 'clone' ? -1 : undefined} onClick={(event) => { event.stopPropagation(); setSelectedProject(project); }} aria-label={`View ${project.name} details`}>View project <ArrowRight size={14} /></button>}
+                {liveUrl ? <a className="project-open-label" href={liveUrl} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()} aria-label={`View ${project.name} project`}>View project <ArrowRight size={14} /></a> : <button className="project-open-label" type="button" onClick={(event) => { event.stopPropagation(); setSelectedProject(project); }} aria-label={`View ${project.name} details`}>View project <ArrowRight size={14} /></button>}
               </article>;
             })}
-            </div>
             {!projects.length && <p className="project-list-empty">Projects will appear here soon.</p>}
           </div>
         </div>

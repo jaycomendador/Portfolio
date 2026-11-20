@@ -38,7 +38,7 @@ export const defaultProjects = [
   { id: 'bizzpredict', name: 'BizzPredict', detail: 'Business prediction project.' },
   { id: 'laundry-app', name: 'Laundry App', detail: 'Laundry service application.' },
   { id: 'boardlinker', name: 'BoardLinker', detail: 'BoardLinker project.' },
-  { id: 'ligtas-calbayog', name: 'Ligtas Calbayog', detail: 'Calbayog safety project.' },
+  { id: 'ligtas-calbayog', name: 'Ligtas Calbayog', detail: 'Calbayog safety project.', url: 'https://ligtascalbayog.com', image: '/ligtas.png' },
   { id: 'alerto-calbayog', name: 'AlertoCalbayog', detail: 'Emergency response system', status: 'Live', url: 'https://alertocalbayog.com', technologies: 'React, Node.js, MongoDB', image: alertoCalbayogImage },
   { id: 'fpop-healthhub', name: 'FPOP HealthHub', detail: 'Clinic management platform', status: 'In progress', url: 'https://fpopclinic.com', technologies: 'React, Express, MongoDB', image: fpopClinicImage },
   { id: 'ayeskeopi', name: 'Ayskeopi', detail: 'Coffee ordering system', status: 'Complete', url: 'https://ayskeopi.vercel.app/', technologies: 'JavaScript, HTML, CSS', image: ayskeopiImage },
