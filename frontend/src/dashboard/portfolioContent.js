@@ -95,6 +95,17 @@ export function loadCertificates() {
 
 export const defaultCertificates = [
   {
+    id: 'achievement',
+    title: 'Achievement',
+    issuer: '',
+    issued: '',
+    credentialUrl: '',
+    isHardcoded: true,
+    fileName: 'achivement.jpg',
+    fileType: 'image/jpeg',
+    fileData: '/achivement.jpg',
+  },
+  {
     id: 'own-it-ccis-ip-bootcamp-2026',
     title: 'OWN IT: The CCIS Intellectual Property Bootcamp',
     issuer: 'Northwest Samar State University · College of Computing and Information Sciences',
@@ -109,8 +120,42 @@ export const defaultCertificates = [
 
 export function mergeCertificateDefaults(certificates) {
   const savedCertificates = Array.isArray(certificates) ? certificates : [];
-  const savedIds = new Set(savedCertificates.map((certificate) => certificate.id));
-  return [...defaultCertificates.filter((certificate) => !savedIds.has(certificate.id)), ...savedCertificates];
+  const uniqueSaved = [];
+  const seenKeys = new Set();
+  const keysFor = (certificate) => {
+    const keys = [];
+    if (certificate?.id) keys.push(`id:${String(certificate.id).trim().toLowerCase()}`);
+    const assetKey = (value) => {
+      if (!value) return '';
+      const normalized = String(value).trim().replace(/\\/g, '/');
+      if (/^data:/i.test(normalized)) return normalized.toLowerCase();
+      return normalized.split('/').pop().toLowerCase();
+    };
+    const fileName = assetKey(certificate?.fileName);
+    const fileData = assetKey(certificate?.fileData);
+    if (fileName) keys.push(`asset:${fileName}`);
+    if (fileData) keys.push(`asset:${fileData}`);
+    const title = String(certificate?.title || '').trim().toLowerCase();
+    const issuer = String(certificate?.issuer || '').trim().toLowerCase();
+    if (title && issuer) {
+      const file = String(certificate.fileName || certificate.credentialUrl || certificate.fileData || '').trim().toLowerCase();
+      keys.push(`details:${title}|${issuer}|${String(certificate.issued || '').trim().toLowerCase()}|${file}`);
+    }
+    return keys;
+  };
+  for (const certificate of savedCertificates) {
+    const keys = keysFor(certificate);
+    if (keys.some((key) => seenKeys.has(key))) continue;
+    uniqueSaved.push(certificate);
+    keys.forEach((key) => seenKeys.add(key));
+  }
+  const missingDefaults = defaultCertificates.filter((certificate) => {
+    const keys = keysFor(certificate);
+    if (keys.some((key) => seenKeys.has(key))) return false;
+    keys.forEach((key) => seenKeys.add(key));
+    return true;
+  });
+  return [...missingDefaults, ...uniqueSaved];
 }
 
 export function saveCertificates(certificates) {

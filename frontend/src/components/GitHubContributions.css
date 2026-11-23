@@ -51,3 +51,37 @@
 .portfolio-page:not(.dark-mode) .portfolio-certificate-card.certificate-text-card{border-color:#d5cec5;background:#f5f2ed;color:#292724}
 .portfolio-page:not(.dark-mode) .certificate-text-kicker,.portfolio-page:not(.dark-mode) .certificate-text-open{color:#985c43}
 .portfolio-page:not(.dark-mode) .certificate-text-issuer{color:#756e67}
+
+/* Match the green portfolio theme and use the available chart width. */
+.portfolio-page .github-activity-section{width:100%;padding-block:26px 34px;background:transparent!important;color:#edf2e9}
+.portfolio-page .github-activity-section>.shell{width:min(1180px,calc(100% - 64px));max-width:none;margin-inline:auto;padding:0}
+.portfolio-page .github-activity-heading{margin-bottom:15px}
+.portfolio-page .github-activity-heading .eyebrow{color:#c7ef68}
+.portfolio-page .github-activity-heading h2{color:#f0f2e9;font:600 clamp(25px,3vw,36px)/1.1 Outfit,sans-serif;letter-spacing:-.035em}
+.portfolio-page .github-activity-heading>a,.portfolio-page .github-activity-footer>a,.portfolio-page .github-activity-message a{color:#c7ef68}
+.portfolio-page .github-contribution-card{width:100%;padding:20px 24px 16px;border:1px solid #1c3a31;border-radius:8px;background:#0d2520;color:#dce6dc}
+.portfolio-page .github-activity-summary strong{color:#edf2e9}.portfolio-page .github-activity-summary span,.portfolio-page .github-activity-message{color:#9eafa5}
+.portfolio-page .github-graph-scroll{overflow-x:auto;scrollbar-color:#42614c #0d2520}
+.portfolio-page .github-graph{width:100%;min-width:760px;justify-content:space-between;gap:12px}
+.portfolio-page .github-weekday-labels{flex:0 0 22px;color:#91a69a;grid-template-rows:repeat(7,clamp(8px,.85vw,12px));gap:clamp(2px,.3vw,4px);font-size:9px;line-height:1}
+.portfolio-page .github-calendar-grid{flex:1;min-width:0;justify-content:space-between;gap:2px}
+.portfolio-page .github-week{flex:1;min-width:10px;grid-template-rows:repeat(7,clamp(8px,.85vw,12px));gap:clamp(2px,.3vw,4px)}
+.portfolio-page .github-day,.portfolio-page .github-legend i{width:clamp(8px,.85vw,12px);height:clamp(8px,.85vw,12px);border:0;border-radius:2px}
+.portfolio-page .github-day.level-0,.portfolio-page .github-legend .level-0{background:#18352b}
+.portfolio-page .github-day.level-1,.portfolio-page .github-legend .level-1{background:#315c3b}
+.portfolio-page .github-day.level-2,.portfolio-page .github-legend .level-2{background:#5e8b42}
+.portfolio-page .github-day.level-3,.portfolio-page .github-legend .level-3{background:#91bd4e}
+.portfolio-page .github-day.level-4,.portfolio-page .github-legend .level-4{background:#c7ef68}
+.portfolio-page .github-month-label,.portfolio-page .github-legend{color:#9eafa5}
+.portfolio-page .github-activity-footer{margin-top:14px}
+@media(max-width:760px){.portfolio-page .github-activity-section>.shell{width:calc(100% - 36px)}.portfolio-page .github-contribution-card{padding:14px 12px}.portfolio-page .github-graph{width:max-content;min-width:760px;justify-content:flex-start;gap:7px}.portfolio-page .github-calendar-grid{flex:none;justify-content:flex-start;gap:3px}.portfolio-page .github-week{flex:none;min-width:0;grid-template-rows:repeat(7,9px);gap:3px}.portfolio-page .github-weekday-labels{grid-template-rows:repeat(7,9px);gap:3px}.portfolio-page .github-day,.portfolio-page .github-legend i{width:9px;height:9px}.portfolio-page .github-activity-footer{align-items:flex-start;flex-direction:column}.portfolio-page .github-legend{align-self:flex-end}}
+
+/* Keep the activity chart monochrome with the site. */
+.portfolio-page .github-activity-section,.portfolio-page .github-contribution-card{border-color:#292929!important;background:#111!important;color:#eee!important}
+.portfolio-page .github-activity-heading h2,.portfolio-page .github-activity-heading .eyebrow,.portfolio-page .github-activity-heading>a,.portfolio-page .github-activity-footer>a{color:#eee!important}
+.portfolio-page .github-day.level-0,.portfolio-page .github-legend .level-0{background:#202020}
+.portfolio-page .github-day.level-1,.portfolio-page .github-legend .level-1{background:#424242}
+.portfolio-page .github-day.level-2,.portfolio-page .github-legend .level-2{background:#686868}
+.portfolio-page .github-day.level-3,.portfolio-page .github-legend .level-3{background:#a0a0a0}
+.portfolio-page .github-day.level-4,.portfolio-page .github-legend .level-4{background:#e2e2e2}
+.portfolio-page .github-month-label,.portfolio-page .github-weekday-labels,.portfolio-page .github-legend,.portfolio-page .github-activity-summary span{color:#aaa!important}

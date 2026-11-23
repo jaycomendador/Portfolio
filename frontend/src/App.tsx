@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { ArrowRight, Atom, Award, BriefcaseBusiness, Braces, ChevronRight, Code2, Coffee, Database, ExternalLink, FileText, GitBranch, Globe2, Layers, LayoutDashboard, Leaf, Menu, Palette, PanelsTopLeft, Phone, Server, UsersRound, X, Monitor, Smartphone, PenTool } from 'lucide-react';
 import GitHubContributions from './components/GitHubContributions';
@@ -17,6 +17,13 @@ const skillIconMap = {
   MySQL: [Database, '#00758f'], PHP: [Code2, '#777bb4'], MongoDB: [Leaf, '#47a248'], 'MERN Stack': [Layers, '#8b5cf6'],
   Figma: [Palette, '#f24e1e'], 'Git/GitHub': [GitBranch, '#f05032'],
 };
+const projectStoryCopy = {
+  'alerto-calbayog': { focus: 'PUBLIC SAFETY · EMERGENCY RESPONSE', summary: 'An emergency response system for Calbayog. This case study presents your work on a local public safety product.' },
+  'fpop-healthhub': { focus: 'HEALTHCARE · CLINIC MANAGEMENT', summary: 'A clinic management platform for FPOP HealthHub, focused on bringing clinic services into a clear digital experience.' },
+  'ligtas-calbayog': { focus: 'COMMUNITY · PUBLIC SAFETY', summary: 'A Calbayog safety project that brings your community focused product work into the spotlight.' },
+  ayeskeopi: { focus: 'FOOD & DRINK · ONLINE ORDERING', summary: 'A coffee ordering system for Ayskeopi, shaped around a simple digital ordering experience.' },
+  crms: { focus: 'OPERATIONS · ROOM MAINTENANCE', summary: 'A room maintenance system that showcases your work building tools for day to day operations.' },
+};
 function TechIcon({ name }) { const [Icon, color] = skillIconMap[name] || [Code2, '#9aa8bb']; return <span className="arsenal-item-icon" style={{ '--skill-icon-color': color } as CSSProperties} aria-hidden="true"><Icon size={15} strokeWidth={2.2} /></span>; }
 function AnimatedName({ name }: { name: string }) { return <span className="interactive-name" tabIndex={0} aria-label={name}>{Array.from(name).map((letter, index) => <span className="interactive-name-letter" key={`${letter}-${index}`} style={{ '--glyph-index': index } as CSSProperties} aria-hidden="true">{letter === ' ' ? '\u00a0' : letter}</span>)}</span>; }
 
@@ -31,9 +38,6 @@ export default function App() {
   const [certificates, setCertificates] = useState(loadCertificates);
   const [selectedCertificate, setSelectedCertificate] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
-  const projectListRef = useRef<HTMLDivElement>(null);
-  const projectDragRef = useRef<{ startX: number; scrollLeft: number; pointerId: number; moved: boolean } | null>(null);
-  const draggedProjectRef = useRef(false);
   useEffect(() => {
     let revealTimer: number;
     const finishLoading = () => {
@@ -51,35 +55,6 @@ export default function App() {
       window.removeEventListener('load', finishLoading);
     };
   }, []);
-  const beginProjectDrag = (event) => {
-    if (event.pointerType === 'mouse' && event.button !== 0 || (event.target as HTMLElement).closest('a, button')) return;
-    const list = projectListRef.current;
-    if (!list) return;
-    projectDragRef.current = { startX: event.clientX, scrollLeft: list.scrollLeft, pointerId: event.pointerId, moved: false };
-    list.classList.add('is-dragging');
-    list.setPointerCapture(event.pointerId);
-  };
-  const moveProjectDrag = (event) => {
-    const drag = projectDragRef.current;
-    const list = projectListRef.current;
-    if (!drag || !list || drag.pointerId !== event.pointerId) return;
-    const distance = event.clientX - drag.startX;
-    if (Math.abs(distance) > 5) drag.moved = true;
-    if (drag.moved) {
-      event.preventDefault();
-      list.scrollLeft = drag.scrollLeft - distance;
-    }
-  };
-  const endProjectDrag = (event) => {
-    const drag = projectDragRef.current;
-    if (!drag || drag.pointerId !== event.pointerId) return;
-    draggedProjectRef.current = drag.moved;
-    projectDragRef.current = null;
-    const list = projectListRef.current;
-    list?.classList.remove('is-dragging');
-    if (drag.moved) window.setTimeout(() => { draggedProjectRef.current = false; }, 100);
-    if (list?.hasPointerCapture(event.pointerId)) list.releasePointerCapture(event.pointerId);
-  };
   useEffect(() => {
     let active = true;
     fetchPortfolioRecord().then((record) => {
@@ -118,7 +93,7 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
   useEffect(() => {
-    const sections = ['home', 'about', 'skills', 'works', 'journey', 'connect'].map((id) => document.getElementById(id)).filter(Boolean);
+    const sections = ['home', 'about', 'team', 'services', 'works', 'stories', 'skills', 'journey', 'connect'].map((id) => document.getElementById(id)).filter(Boolean);
     const observer = new IntersectionObserver((entries) => {
       const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
       if (visible) setActiveSection(visible.target.id);
@@ -153,13 +128,14 @@ export default function App() {
       scene.removeEventListener('pointerleave', reset);
     };
   }, []);
-  const links = [['Home', '#home'], ['About', '#about'], ['Skills', '#skills'], ['Projects', '#works'], ['Journey', '#journey'], ['Contact', '#connect']];
+  const links = [['Home', '#home'], ['About', '#about'], ['Team', '#team'], ['Projects', '#works'], ['Experience', '#journey'], ['Blog', '#stories'], ['Contact', '#connect']];
   const frontendSkills = ['HTML5', 'CSS3', 'React.js', 'React Native'];
   const professionalSkills = ['Figma', 'Git/GitHub'];
   const fullStackSkills = ['MERN Stack'];
   const backendSkills = ['Node.js', 'REST APIs', 'MySQL', 'PHP', 'MongoDB'];
-  const visibleProjects = projects;
-  const carouselProjects = visibleProjects;
+  const projectsWithImages = projects.filter((project) => typeof project.image === 'string' && project.image.trim().length > 0);
+  const featuredStories = ['ligtas-calbayog', 'crms'].map((id) => projectsWithImages.find((project) => project.id === id)).filter(Boolean);
+  const getProjectStory = (project) => projectStoryCopy[project.id] || { focus: project.technologies || 'PRODUCT STORY', summary: project.detail || `${project.name} — project overview and product work.` };
   const clientCount = Math.max(0, Number.parseInt(portfolioContent.clients, 10) || 0);
   const deployedWebsiteCount = projects.filter((project) => typeof project?.status === 'string' && project.status.toLowerCase() === 'live' && /^https?:\/\//i.test(project.url || '')).length;
   const programmingLanguages = Object.entries({ Java: 50, Python: 50, ...portfolioContent.programmingLanguageLevels });
@@ -171,49 +147,62 @@ export default function App() {
     <main className={darkMode ? 'portfolio-page dark-mode' : 'portfolio-page'} aria-busy={isLoading}>
       {isLoading && <div className="portfolio-loader" role="status" aria-label="Loading portfolio"><div className="portfolio-loader-icon"><Atom size={28} strokeWidth={1.4} /></div><span className="portfolio-loader-label">JAY COMENDADOR</span><strong>Loading portfolio</strong><div className="portfolio-loader-track" aria-hidden="true"><span /></div></div>}
       <header className="site-header shell">
-          <a className="brand" href="#home"><img src="/Glossy%20Black%20and%20Gold%20JC%20Monogram.png" alt="" /><span>Portfolio</span></a>
-          <nav className={menuOpen ? 'nav-links open' : 'nav-links'}>{links.map(([label, href]) => <a onClick={() => setMenuOpen(false)} href={href} key={label} className={activeSection === href.slice(1) ? 'active' : ''} aria-current={activeSection === href.slice(1) ? 'location' : undefined}>{label}</a>)}</nav>
+          <a className="brand" href="#home"><img src="/logoko.png" alt="" /><span>{portfolioContent.fullName || portfolioContent.name}</span></a>
+          <nav className={menuOpen ? 'nav-links open' : 'nav-links'} aria-label="Main navigation">{links.map(([label, href]) => <a onClick={() => setMenuOpen(false)} href={href} key={label} className={activeSection === href.slice(1) ? 'active' : ''} aria-current={activeSection === href.slice(1) ? 'location' : undefined}>{label}</a>)}</nav>
           <div className="social-links" aria-label="Social links"><a href="#connect" aria-label="Facebook">f</a><a href="#connect" aria-label="LinkedIn">in</a><a href="#connect" aria-label="Instagram"><InstagramIcon /></a></div>
-          
+          <a className="header-cta" href="#connect">Let&apos;s Work Together <ArrowRight size={14} /></a>
           <button className="menu-button" aria-label="Toggle menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
         </header>
       <section className="hero-section" id="home">
         
         <div className="hero shell">
-          <div className="hero-copy"><p className="eyebrow">PORTFOLIO &#8212; 2026</p><h1>Hello I'm <AnimatedName name={portfolioContent.name} /></h1><h2>{portfolioContent.role}</h2><p className="intro">{portfolioContent.intro}</p><div className="hero-actions"><a className="button primary" href="#works">View Projects <ArrowRight size={14} /></a><a className="button secondary" href="#connect">Contact Me</a></div><div className="hero-secondary-links"><a href="/resume.pdf" target="_blank" rel="noreferrer">View Resume <ExternalLink size={12} /></a><a href="#services">Explore Services <ArrowRight size={12} /></a></div><div className="hero-stats" aria-label="Portfolio statistics"><article><div><BriefcaseBusiness size={13} /><strong>{projects.length}</strong></div><span>Projects</span></article><article><div><UsersRound size={13} /><strong>{clientCount}</strong></div><span>Clients</span></article><article><div><Globe2 size={13} /><strong>{deployedWebsiteCount}</strong></div><span>Deployed websites</span></article></div></div>
-          <div className="portfolio-world react-atom-scene" aria-label="A red neon 3D atom with animated electric strands">
-            <div className="hero-scroll-object">
-              <ElectricLogo src="/react-atom.svg" color="#fff0f5" glowColor="#d83a5e" scale={0.66} intensity={0.95} glow={0.55} thickness={1.45} strands={4} bend={0.48} crackle={1.5} arcs={2} flicker={1.15} fill={0} speed={3.4} interactive cursorIntensity={0.8} cursorRadius={100} theme="dark" className="react-atom-electric-logo" />
-            </div>
+          <div className="hero-copy">
+            <p className="eyebrow hero-badge"><span aria-hidden="true">✦</span> BUILDING DIGITAL PRODUCTS FOR A BETTER TOMORROW</p>
+            <h1>Hi, I&apos;m<br /><AnimatedName name={portfolioContent.name} /></h1>
+            <h2>{portfolioContent.role}</h2>
+            <p className="intro">{portfolioContent.intro}</p>
+            <div className="hero-actions"><a className="button primary" href="#works">View My Work <ArrowRight size={14} /></a><a className="button secondary" href="/resume.pdf" target="_blank" rel="noreferrer"><FileText size={14} /> Download Resume</a></div>
+            <div className="hero-secondary-links"><a href="#services">Explore Services <ArrowRight size={12} /></a></div>
           </div>
-        </div>
-      </section>
+          <div className="portfolio-world react-atom-scene" aria-label={`${portfolioContent.name} portrait`}>
+            <div className="hero-scroll-object"><img className="hero-editorial-portrait" src="/profile.png" alt={`${portfolioContent.name} portrait`} /></div>
+            <span className="hero-float hero-float-frontend" aria-hidden="true">+ Frontend</span>
+            <span className="hero-float hero-float-react" aria-hidden="true">React.js</span>
+            <span className="hero-float hero-float-node" aria-hidden="true">Node.js</span>
+            <span className="hero-float hero-float-design" aria-hidden="true">UI / UX</span>
+          </div>
+          <div className="hero-stats" aria-label="Portfolio statistics">
+            <article><div><strong>{portfolioContent.experience || '4 Years'}</strong></div><span>Experience</span></article>
+            <article><div><strong>{projects.length}</strong></div><span>Projects delivered</span></article>
+            <article><div><strong>{clientCount}</strong></div><span>Happy clients</span></article>
+            <article><div><strong>{deployedWebsiteCount}</strong></div><span>Live websites</span></article>
+          </div>
+        </div>      </section>
       <section className="about-section" id="about"><div className="shell about-grid"><div className="about-portrait" data-scroll-animation><img src="/profile.png" alt={`${portfolioContent.name} portrait`} loading="lazy" /></div><article className="about-card" data-scroll-animation><p className="eyebrow">GET TO KNOW ME</p><h2>About Me</h2><h3 className="about-profile-name">{portfolioContent.name}</h3><p className="about-profile-role">{portfolioContent.role}</p><p className="about-description">{portfolioContent.about}</p><a href="#certificates" className="button outline">View certificates <ChevronRight size={14} /></a></article></div></section>
-      <section className="skills-section" id="skills"><div className="shell"><div className="arsenal-heading"><h2><span className="arsenal-heading-icon" aria-hidden="true"><Code2 size={18} /></span> Technical Arsenal</h2><small>/ stack</small></div><div className="skills-marquee" role="img" aria-label={`Frontend: ${frontendSkills.map((skill) => `${skill} ${marqueePercent(skill)}%`).join(', ')}. Backend and tools: ${backendMarqueeSkills.map((skill) => `${skill} ${marqueePercent(skill)}%`).join(', ')}`}><div className="skills-marquee-row"><span className="skills-marquee-label">FRONTEND</span><div className="skills-marquee-window"><div className="skills-marquee-track">{[...frontendSkills, ...frontendSkills].map((skill, index) => <span className="skills-marquee-chip" key={`frontend-${skill}-${index}`} aria-hidden="true">{skill}<small>{marqueePercent(skill)}%</small></span>)}</div></div></div><div className="skills-marquee-row"><span className="skills-marquee-label">BACKEND</span><div className="skills-marquee-window"><div className="skills-marquee-track reverse">{[...backendMarqueeSkills, ...backendMarqueeSkills].map((skill, index) => <span className="skills-marquee-chip" key={`backend-${skill}-${index}`} aria-hidden="true">{skill}<small>{marqueePercent(skill)}%</small></span>)}</div></div></div></div><div className="arsenal-grid"><div className="arsenal-column"><h3><span className="arsenal-section-icon frontend-icon" aria-hidden="true"><PanelsTopLeft size={14} /></span> Frontend</h3><ul>{frontendSkills.map((skill) => <li key={skill}><span className="arsenal-skill-name"><TechIcon name={skill} />{skill}</span><small>{arsenalLevels[skill]}%</small></li>)}</ul><h3 className="arsenal-subheading"><span className="arsenal-section-icon languages-icon" aria-hidden="true"><Braces size={14} /></span> Programming Languages</h3><div className="language-proficiency-list">{programmingLanguages.map(([language, level]) => <div className="language-proficiency" key={String(language)}><span className="language-proficiency-name"><TechIcon name={String(language)} />{String(language)}</span><div className="proficiency-track"><span style={{ width: `${Math.min(100, Math.max(0, Number(level) || 0))}%` }} /></div><small>{String(level)}%</small></div>)}</div></div><div className="arsenal-column"><h3><span className="arsenal-section-icon backend-icon" aria-hidden="true"><Server size={14} /></span> Backend</h3><ul>{backendSkills.map((skill) => <li key={skill}><span className="arsenal-skill-name"><TechIcon name={skill} />{skill}</span><small>{arsenalLevels[skill]}%</small></li>)}</ul><h3 className="arsenal-subheading"><span className="arsenal-section-icon fullstack-icon" aria-hidden="true"><Layers size={14} /></span> Full Stack</h3><ul>{fullStackSkills.map((skill) => <li key={skill}><span className="arsenal-skill-name"><TechIcon name={skill} />{skill}</span><small>{arsenalLevels[skill]}%</small></li>)}</ul><h3 className="arsenal-subheading"><span className="arsenal-section-icon design-icon" aria-hidden="true"><Palette size={14} /></span> Design &amp; Tools</h3><ul>{professionalSkills.map((skill) => <li key={skill}><span className="arsenal-skill-name"><TechIcon name={skill} />{skill}</span><small>{arsenalLevels[skill]}%</small></li>)}</ul></div></div></div></section>
+      <section className="team-section" id="team"><div className="shell"><div className="team-heading"><p className="eyebrow">TEAM</p><h2>The Team</h2></div><figure className="team-photo-frame"><img src="/Celebratory%20Group%20Selfie%20at%20Banquet%20Table.png" alt="Team group photo" loading="lazy" /></figure></div></section>
+      <section className="skills-section" id="skills"><div className="shell"><div className="arsenal-heading"><h2><span className="arsenal-heading-icon" aria-hidden="true"><Code2 size={18} /></span> Tools I Use to Build Great Products</h2><small>/ stack</small></div><div className="skills-marquee" role="img" aria-label={`Frontend: ${frontendSkills.map((skill) => `${skill} ${marqueePercent(skill)}%`).join(', ')}. Backend and tools: ${backendMarqueeSkills.map((skill) => `${skill} ${marqueePercent(skill)}%`).join(', ')}`}><div className="skills-marquee-row"><span className="skills-marquee-label">FRONTEND</span><div className="skills-marquee-window"><div className="skills-marquee-track">{[...frontendSkills, ...frontendSkills].map((skill, index) => <span className="skills-marquee-chip" key={`frontend-${skill}-${index}`} aria-hidden="true">{skill}<small>{marqueePercent(skill)}%</small></span>)}</div></div></div><div className="skills-marquee-row"><span className="skills-marquee-label">BACKEND</span><div className="skills-marquee-window"><div className="skills-marquee-track reverse">{[...backendMarqueeSkills, ...backendMarqueeSkills].map((skill, index) => <span className="skills-marquee-chip" key={`backend-${skill}-${index}`} aria-hidden="true">{skill}<small>{marqueePercent(skill)}%</small></span>)}</div></div></div></div><div className="arsenal-grid"><div className="arsenal-column"><h3><span className="arsenal-section-icon frontend-icon" aria-hidden="true"><PanelsTopLeft size={14} /></span> Frontend</h3><ul>{frontendSkills.map((skill) => <li key={skill}><span className="arsenal-skill-name"><TechIcon name={skill} />{skill}</span><small>{arsenalLevels[skill]}%</small></li>)}</ul><h3 className="arsenal-subheading"><span className="arsenal-section-icon languages-icon" aria-hidden="true"><Braces size={14} /></span> Programming Languages</h3><div className="language-proficiency-list">{programmingLanguages.map(([language, level]) => <div className="language-proficiency" key={String(language)}><span className="language-proficiency-name"><TechIcon name={String(language)} />{String(language)}</span><div className="proficiency-track"><span style={{ width: `${Math.min(100, Math.max(0, Number(level) || 0))}%` }} /></div><small>{String(level)}%</small></div>)}</div></div><div className="arsenal-column"><h3><span className="arsenal-section-icon backend-icon" aria-hidden="true"><Server size={14} /></span> Backend</h3><ul>{backendSkills.map((skill) => <li key={skill}><span className="arsenal-skill-name"><TechIcon name={skill} />{skill}</span><small>{arsenalLevels[skill]}%</small></li>)}</ul><h3 className="arsenal-subheading"><span className="arsenal-section-icon fullstack-icon" aria-hidden="true"><Layers size={14} /></span> Full Stack</h3><ul>{fullStackSkills.map((skill) => <li key={skill}><span className="arsenal-skill-name"><TechIcon name={skill} />{skill}</span><small>{arsenalLevels[skill]}%</small></li>)}</ul><h3 className="arsenal-subheading"><span className="arsenal-section-icon design-icon" aria-hidden="true"><Palette size={14} /></span> Design &amp; Tools</h3><ul>{professionalSkills.map((skill) => <li key={skill}><span className="arsenal-skill-name"><TechIcon name={skill} />{skill}</span><small>{arsenalLevels[skill]}%</small></li>)}</ul></div></div></div></section>
 
       <section className="content-section" id="works">
         <div className="shell projects-shell">
-          <div className="projects-heading-row"><div className="section-title"><p className="eyebrow">SELECTED WORK</p><h2>Recent Projects</h2></div></div>
-          <div className="project-text-list" id="project-list" ref={projectListRef} onPointerDown={beginProjectDrag} onPointerMove={moveProjectDrag} onPointerUp={endProjectDrag} onPointerCancel={endProjectDrag} aria-label="Recent projects. Drag or swipe left and right to browse all projects.">
-            {carouselProjects.map((project) => {
+          <div className="projects-heading-row"><div className="section-title"><p className="eyebrow">SELECTED WORK</p><h2>Recent Projects</h2><span className="project-count">{projectsWithImages.length} projects</span></div></div>
+          <div className="project-text-list" id="project-list" aria-label={`All ${projectsWithImages.length} portfolio projects with images`}>
+            {projectsWithImages.map((project) => {
               const liveUrl = /^https?:\/\//i.test(project.url || '') ? project.url : '';
-              const openDetails = () => {
-                if (draggedProjectRef.current) { draggedProjectRef.current = false; return; }
-                setSelectedProject(project);
-              };
+              const openDetails = () => setSelectedProject(project);
               return <article className="project-text-row project-card-interactive" key={project.id || project.name} role="button" tabIndex={0} aria-label={`View details for ${project.name}`} onClick={openDetails} onKeyDown={(event) => { if ((event.target as HTMLElement).closest('a, button')) return; if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setSelectedProject(project); } }}>
                 <div className="project-preview">{project.image && <img src={project.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; event.currentTarget.parentElement?.querySelector('.project-no-image')?.classList.add('is-visible'); }} />}<span className={`project-no-image${project.image ? '' : ' is-visible'}`} aria-hidden="true"><Code2 size={44} strokeWidth={1.25} /></span></div>
                 <div className="project-gallery-copy"><div className="project-text-heading"><h3>{project.name}</h3>{project.status && <span>{project.status}</span>}</div><p>{project.detail || 'Project details coming soon.'}</p>{project.technologies && <small>{project.technologies}</small>}</div>
                 {liveUrl ? <a className="project-open-label" href={liveUrl} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()} aria-label={`View ${project.name} project`}>View project <ArrowRight size={14} /></a> : <button className="project-open-label" type="button" onClick={(event) => { event.stopPropagation(); setSelectedProject(project); }} aria-label={`View ${project.name} details`}>View project <ArrowRight size={14} /></button>}
               </article>;
             })}
-            {!projects.length && <p className="project-list-empty">Projects will appear here soon.</p>}
+            {!projectsWithImages.length && <p className="project-list-empty">Projects with images will appear here soon.</p>}
           </div>
         </div>
       </section>
-      <section className="services-section" id="services"><div className="shell"><div className="section-title left"><p className="eyebrow">WHAT I CAN DO</p><h2>Services</h2><span>From the first sketch to a polished, working product.</span></div><div className="services-grid"><article className="service-card" data-scroll-animation><div className="service-icon"><Monitor size={23} /></div><span className="service-number">01</span><h3>Web Frontend</h3><p>Responsive, accessible websites built to look sharp and work smoothly on every screen.</p><div className="service-tags"><span>Web design</span><span>Development</span><span>Responsive</span></div></article><article className="service-card" data-scroll-animation><div className="service-icon"><Smartphone size={23} /></div><span className="service-number">02</span><h3>App Development</h3><p>Mobile app interfaces and features shaped around real user needs and a simple experience.</p><div className="service-tags"><span>Mobile UI</span><span>App development</span><span>Usability</span></div></article><article className="service-card" data-scroll-animation><div className="service-icon"><PenTool size={23} /></div><span className="service-number">03</span><h3>Figma Prototypes</h3><p>Clickable Figma prototypes that make ideas easy to explore, review, and validate before development.</p><div className="service-tags"><span>Wireframes</span><span>UI/UX</span><span>Prototype</span></div></article></div><a className="services-cta" href="#connect">Have a project in mind? <span>Let&apos;s talk <ArrowRight size={14} /></span></a></div></section>      <section className="journey-section" id="journey"><GitHubContributions username="jaycomendador" /><section className="certificates-section" id="certificates">
+      <section className="stories-section" id="stories"><div className="shell"><div className="stories-heading"><div className="section-title"><p className="eyebrow">SELECTED CASE STUDIES</p><h2>Product Stories</h2><span>Projects from concept to working product.</span></div><a href="#works">Explore all projects <ArrowRight size={14} /></a></div><div className="stories-grid">{featuredStories.map((project) => { const story = getProjectStory(project); return <article className="story-card" key={`story-${project.id || project.name}`}><a className="story-image" href={project.url && /^https?:\/\//i.test(project.url) ? project.url : '#works'} target={project.url && /^https?:\/\//i.test(project.url) ? '_blank' : undefined} rel="noreferrer" aria-label={`Explore ${project.name}`}><img src={project.image} alt={`${project.name} preview`} loading="lazy" /><span>VIEW PROJECT <ArrowRight size={13} /></span></a><div className="story-copy"><small>{story.focus}</small><h3>{project.name}</h3><p>{story.summary}</p>{project.technologies && <span className="story-stack">{project.technologies}</span>}</div></article>; })}</div></div></section>
+      <section className="services-section" id="services"><div className="shell"><div className="section-title left"><p className="eyebrow">WHAT I CAN DO</p><h2>From Ideas to Impactful Products</h2><span>From the first sketch to a polished, working product.</span></div><div className="services-grid"><article className="service-card" data-scroll-animation><div className="service-icon"><Monitor size={23} /></div><span className="service-number">01</span><h3>Web Frontend</h3><p>Responsive, accessible websites built to look sharp and work smoothly on every screen.</p><div className="service-tags"><span>Web design</span><span>Development</span><span>Responsive</span></div></article><article className="service-card" data-scroll-animation><div className="service-icon"><Smartphone size={23} /></div><span className="service-number">02</span><h3>App Development</h3><p>Mobile app interfaces and features shaped around real user needs and a simple experience.</p><div className="service-tags"><span>Mobile UI</span><span>App development</span><span>Usability</span></div></article><article className="service-card" data-scroll-animation><div className="service-icon"><PenTool size={23} /></div><span className="service-number">03</span><h3>Figma Prototypes</h3><p>Clickable Figma prototypes that make ideas easy to explore, review, and validate before development.</p><div className="service-tags"><span>Wireframes</span><span>UI/UX</span><span>Prototype</span></div></article><article className="service-card" data-scroll-animation><div className="service-icon"><Layers size={23} /></div><span className="service-number">04</span><h3>Product Thinking</h3><p>Thoughtful interface decisions that make digital products clear, useful, and easy to navigate.</p><div className="service-tags"><span>User focused</span><span>Clear flows</span><span>Polished UI</span></div></article></div><a className="services-cta" href="#connect">Have a project in mind? <span>Let&apos;s talk <ArrowRight size={14} /></span></a></div></section>      <section className="journey-section" id="journey"><div className="journey-heading shell"><p className="eyebrow">MY JOURNEY</p><h2>A Journey of Continuous Growth</h2></div><GitHubContributions username="jaycomendador" /><section className="certificates-section" id="certificates">
         <div className="shell">
-          <div className="section-title certificate-section-heading"><p className="eyebrow">LEARNING &amp; ACHIEVEMENTS</p><h2>Certificates</h2><span>Click a certificate to view it.</span></div>
+          <div className="section-title certificate-section-heading"><p className="eyebrow">LEARNING &amp; ACHIEVEMENTS</p><h2>Achievements &amp; Certificates</h2><span>A selection of milestones, recognition, and learning.</span></div>
           {certificates.length ? <>
             <div className="certificate-gallery">
               {certificates.map((certificate, index) => <article className={`certificate-gallery-card${selectedCertificate?.id === certificate.id ? ' is-selected' : ''}`} key={certificate.id}>
@@ -241,7 +230,7 @@ export default function App() {
       <section className="connect-section" id="connect"><div className="shell"><div className="connect-heading"><h2><span></span>Contact</h2><small>/contact</small></div><ContactForm email={portfolioContent.email} /><div className="connect-grid"><a className="connect-card" href="https://github.com/jaycomendador" target="_blank" rel="noreferrer"><span className="connect-icon connect-icon-github"><GitHubIcon /></span><span><strong>GitHub</strong><small>jaycomendador</small></span><ExternalLink size={14} /></a><a className="connect-card" href="https://mail.google.com/mail/?view=cm&fs=1&to=Jcomendador120%40gmail.com" target="_blank" rel="noreferrer"><span className="connect-icon connect-icon-email"><GmailIcon /></span><span><strong>Email</strong><small>Jcomendador120@gmail.com</small></span><ExternalLink size={14} /></a><a className="connect-card" href="tel:+639626317088"><span className="connect-icon connect-icon-phone"><Phone size={21} /></span><span><strong>Phone</strong><small>+63 962 631 7088</small></span><ArrowRight size={14} /></a><a className="connect-card" href="https://www.facebook.com/jay.comendador.92" target="_blank" rel="noreferrer"><span className="connect-icon connect-icon-facebook"><FacebookIcon /></span><span><strong>Facebook</strong><small>Connect with me</small></span><ExternalLink size={14} /></a><a className="connect-card" href="https://www.linkedin.com/in/jay-comendador-b81074313" target="_blank" rel="noreferrer"><span className="connect-icon connect-icon-linkedin"><LinkedInIcon /></span><span><strong>LinkedIn</strong><small>Connect with me</small></span><ExternalLink size={14} /></a><a className="connect-card" href="https://www.instagram.com/mr_yajz/?hl=en" target="_blank" rel="noreferrer"><span className="connect-icon connect-icon-instagram"><InstagramIcon /></span><span><strong>Instagram</strong><small>@mr_yajz</small></span><ExternalLink size={14} /></a></div></div></section>      <footer className="site-footer shell">
         <div className="footer-main">
           <div className="footer-brand-column">
-            <a className="footer-brand" href="#home"><img src="/Glossy Black and Gold JC Monogram.png" alt="" aria-hidden="true" /><span>{portfolioContent.name}</span></a>
+            <a className="footer-brand" href="#home"><img src="/logoko.png" alt="" aria-hidden="true" /><span>{portfolioContent.fullName || portfolioContent.name}</span></a>
 
             <div className="footer-socials" aria-label="Social links">
               <a href="https://github.com/jaycomendador" target="_blank" rel="noreferrer" aria-label="GitHub"><GitHubIcon /></a>

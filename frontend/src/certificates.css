@@ -64,3 +64,9 @@
 @keyframes certificate-modal-enter{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
 @media(max-width:600px){.portfolio-certificate-card.certificate-text-card{min-height:0;padding:17px}.certificate-modal-backdrop{padding:10px}.certificate-modal{max-height:calc(100dvh - 20px);border-radius:12px}.certificate-modal>header{padding:15px}.certificate-modal>header h2{font-size:16px}.certificate-modal-content{padding:8px}.certificate-modal-content iframe{height:68vh}.certificate-modal>footer{padding:12px 15px}}
 @media(prefers-reduced-motion:reduce){.certificate-modal{animation:none}.certificate-text-card{transition:none}}
+
+.portfolio-page .certificate-text-card .certificate-text-kicker,.portfolio-page .certificate-text-open,.portfolio-page .certificate-text-issuer{color:#ccc!important}
+.portfolio-page .certificate-modal,.portfolio-page .certificate-modal-backdrop,.portfolio-page .certificate-modal-content{border-color:#333!important;background:#101010!important;color:#eee!important;box-shadow:none!important;backdrop-filter:none!important}
+.portfolio-page .certificate-modal>header,.portfolio-page .certificate-modal>footer{border-color:#333!important}
+.portfolio-page .certificate-modal>header button{border-color:#444!important;background:#1a1a1a!important;color:#eee!important}
+.portfolio-page .certificate-modal>footer a{color:#eee!important}
