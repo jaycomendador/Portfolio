@@ -166,6 +166,12 @@ export default function App() {
           </div>
           <div className="portfolio-world react-atom-scene" aria-label={`${portfolioContent.name} portrait`}>
             <div className="hero-scroll-object"><img className="hero-editorial-portrait" src="/ako%20ini.png" alt={`${portfolioContent.name} portrait`} /></div>
+            <svg className="hero-orbit-label" viewBox="0 0 500 500" aria-hidden="true" focusable="false">
+              <defs><path id="hero-orbit-circle" d="M250 250 m-220 0 a220 220 0 1 1 440 0 a220 220 0 1 1 -440 0" /></defs>
+              <g className="hero-orbit-label-spin">
+                <text><textPath href="#hero-orbit-circle">WEB DEVELOPER • GHL SPECIALIST • CREATIVE BUILDER • WEB DEVELOPER • GHL SPECIALIST • CREATIVE BUILDER •</textPath></text>
+              </g>
+            </svg>
             <span className="hero-float hero-float-frontend" aria-hidden="true">+ Frontend</span>
             <span className="hero-float hero-float-react" aria-hidden="true">React.js</span>
             <span className="hero-float hero-float-node" aria-hidden="true">Node.js</span>
