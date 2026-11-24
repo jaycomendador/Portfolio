@@ -1541,6 +1541,13 @@ html{scroll-padding-top:76px}
 .portfolio-page.dark-mode .hero-stats article>span{margin:0;color:#aaa!important;font:11px/1.35 'DM Sans',sans-serif;letter-spacing:0;text-transform:none;white-space:normal}
 @media(max-width:760px){.portfolio-page.dark-mode .hero-stats{width:100%!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}.portfolio-page.dark-mode .hero-stats article,.portfolio-page.dark-mode .hero-stats article:first-child,.portfolio-page.dark-mode .hero-stats article:last-child{padding:0 8px}.portfolio-page.dark-mode .hero-stats article:first-child{padding-left:0}.portfolio-page.dark-mode .hero-stats strong{font-size:15px}.portfolio-page.dark-mode .hero-stats article>span{font-size:9px}}
 @media(max-width:420px){.portfolio-page.dark-mode .hero-stats{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:14px}.portfolio-page.dark-mode .hero-stats article:nth-child(2){border-right:0}.portfolio-page.dark-mode .hero-stats article:nth-child(3){padding-left:0}}
+/* Keep portrait images unframed on the homepage and About section. */
+.portfolio-page #home .hero-scroll-object,
+.portfolio-page #home .hero-editorial-portrait,
+.portfolio-page #about .about-portrait,
+.portfolio-page #about .about-portrait img{border:0!important;outline:0!important;box-shadow:none!important}
+.portfolio-page #home .hero-editorial-portrait,
+.portfolio-page #about .about-portrait img{filter:drop-shadow(0 8px 18px rgba(230,235,245,.22))!important;mix-blend-mode:normal!important}
 .portfolio-page>.site-header{justify-content:space-between;gap:clamp(12px,2vw,28px);padding-inline:clamp(18px,4vw,60px)!important;background:#080808f5!important;border-bottom:1px solid #303030!important;box-shadow:none!important}
 .portfolio-page .brand{flex:0 0 auto;gap:9px;color:#f2f2f2!important;font:600 13px Outfit,sans-serif;white-space:nowrap}
 .portfolio-page .brand img{width:31px;height:31px;object-fit:contain}
@@ -1569,6 +1576,9 @@ html{scroll-padding-top:76px}
 .portfolio-page #home .portfolio-world::before{inset:8% 3%;border-color:#ffffff2b;transform:rotate(-11deg) scaleX(.86)}
 .portfolio-page #home .hero-scroll-object{width:min(84%,500px);height:auto;aspect-ratio:1/1;overflow:hidden;border:2px solid #f2f2f2;border-radius:0;background:#111;box-shadow:none;transform:translate(-50%,-50%)}
 .portfolio-page #home .hero-editorial-portrait{width:100%;height:100%;object-fit:cover;object-position:50% 22%;filter:none!important;mask-image:linear-gradient(180deg,#000 0%,#000 88%,transparent 100%)}
+.portfolio-page #home .portfolio-world::before{display:none!important}
+.portfolio-page #home .hero-scroll-object{border:0!important;box-shadow:none!important;background:transparent}
+.portfolio-page #home .hero-editorial-portrait{mask-image:none;filter:none!important;mix-blend-mode:multiply}
 .portfolio-page #home .hero-float{border-color:#555;background:#151515;color:#eee}
 .portfolio-page #home .hero-float-frontend,.portfolio-page #home .hero-float-node{color:#eee}
 .portfolio-page #home .hero-float-react,.portfolio-page #home .hero-float-design{color:#ddd}
