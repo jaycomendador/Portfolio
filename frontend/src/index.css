@@ -1396,8 +1396,9 @@ html{scroll-padding-top:76px}
 .portfolio-page .skills-marquee{display:grid;gap:10px;width:100%;margin:24px 0 0;padding:0}
 .portfolio-page .skills-marquee-row{width:100%;margin:0;gap:16px}
 .portfolio-page .skills-marquee-label{flex:0 0 78px;padding:0;background:transparent;color:#91a69a;font-size:9px;letter-spacing:.12em}
-.portfolio-page .skills-marquee-window{overflow-x:auto;mask-image:none;-webkit-mask-image:none;scrollbar-width:none}
-.portfolio-page .skills-marquee-track,.portfolio-page .skills-marquee-track.reverse{width:max-content;flex:none;animation:none;transform:none;gap:9px;mask-image:none;-webkit-mask-image:none}
+.portfolio-page .skills-marquee-window{overflow:hidden;mask-image:none;-webkit-mask-image:none;scrollbar-width:none}
+.portfolio-page .skills-marquee-track{width:max-content;flex:none;animation:skills-marquee-travel 34s linear infinite;transform:none;gap:9px;mask-image:none;-webkit-mask-image:none}
+.portfolio-page .skills-marquee-track.reverse{animation-direction:reverse;animation-duration:40s}
 .portfolio-page .skills-marquee-chip{padding:10px 13px;border:1px solid #254638;border-radius:5px;background:#102a22;color:#e0e9df;font-size:11px}
 .portfolio-page .skills-marquee-chip small{color:var(--lime);font-size:9px}
 .portfolio-page .journey-heading{width:min(1180px,calc(100% - 64px));margin:0 auto 22px}
@@ -1610,3 +1611,26 @@ html{scroll-padding-top:76px}
 @keyframes hero-orbit-spin{to{transform:rotate(360deg)}}
 @media(max-width:760px){.portfolio-page #home .hero-orbit-label{width:min(calc(72vw + 52px),412px)}}
 @media(prefers-reduced-motion:reduce){.portfolio-page #home .hero-orbit-label-spin{animation-duration:90s}}
+
+/* Poster-inspired hero: oversized type behind a full, unframed portrait. */
+.portfolio-page #home.hero-section{isolation:isolate;overflow:hidden;background-color:#080808!important}
+.portfolio-page #home.hero-section::before{position:absolute;z-index:0;top:13vh;left:-.035em;width:max-content;max-width:none;pointer-events:none;content:'PORTFOLIO';color:#c41620;font:800 clamp(150px,25vw,380px)/.78 Outfit,sans-serif;letter-spacing:-.085em;white-space:nowrap;opacity:.68}
+.portfolio-page #home .hero{z-index:1;min-height:100vh;align-items:center;overflow:visible}
+.portfolio-page #home .hero-copy{position:relative;z-index:3;align-self:center}
+.portfolio-page #home .portfolio-world.react-atom-scene{position:absolute;z-index:2;right:0;bottom:0;left:auto;grid-column:auto;grid-row:auto;width:min(58vw,790px);height:calc(100% - 30px);min-height:0;margin:0;pointer-events:none}
+.portfolio-page #home .hero-scroll-object{position:absolute;inset:auto 0 0 auto;width:100%;height:100%;aspect-ratio:auto;margin:0;overflow:visible;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;transform:none}
+.portfolio-page #home .hero-editorial-portrait{display:block;width:100%;height:100%;object-fit:contain;object-position:right bottom;filter:none!important;mask-image:none!important;mix-blend-mode:normal!important}
+.portfolio-page #home .hero-float,.portfolio-page #home .hero-orbit-label{display:none!important}
+.portfolio-page #home .hero-stats{position:absolute;z-index:3;left:clamp(30px,6vw,92px);bottom:34px;width:min(590px,48vw)!important;margin:0}
+@media(max-width:760px){.portfolio-page #home.hero-section::before{top:24%;left:-.04em;font-size:clamp(90px,24vw,180px);opacity:.42}.portfolio-page #home .hero{min-height:0;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto;gap:0;padding:100px 20px 24px}.portfolio-page #home .hero-copy{grid-column:1;grid-row:1;padding:18px 0 14px}.portfolio-page #home .portfolio-world.react-atom-scene{position:relative;right:auto;bottom:auto;left:auto;grid-column:1;grid-row:2;width:100%;height:70vw;max-height:420px;margin:0 auto}.portfolio-page #home .hero-scroll-object{position:absolute;inset:0;width:100%;height:100%}.portfolio-page #home .hero-editorial-portrait{object-position:center bottom}.portfolio-page #home .hero-stats{position:relative;grid-column:1;grid-row:3;left:auto;bottom:auto;width:100%!important;margin:8px 0 0}}
+
+/* Keep the complete hero composition inside one viewport. */
+.portfolio-page #home.hero-section{height:100svh;min-height:0;padding-top:68px!important}
+.portfolio-page #home .hero{height:calc(100svh - 68px);min-height:0;padding:clamp(16px,3vh,28px) clamp(30px,6vw,92px) clamp(78px,12vh,96px)}
+.portfolio-page #home .hero h1{font-size:clamp(48px,6.5vw,88px)}
+.portfolio-page #home .hero-copy{max-width:540px}
+.portfolio-page #home .hero-badge{margin-bottom:clamp(10px,2vh,18px)}
+.portfolio-page #home .hero .intro{margin-block:clamp(9px,1.8vh,16px)}
+.portfolio-page #home .portfolio-world.react-atom-scene{height:calc(100% - 10px);width:min(56vw,760px)}
+.portfolio-page #home .hero-stats{bottom:clamp(15px,3vh,26px)}
+@media(max-width:760px){.portfolio-page #home.hero-section{height:100svh;min-height:0;padding-top:66px!important}.portfolio-page #home .hero{height:calc(100svh - 66px);min-height:0;grid-template-rows:auto minmax(170px,1fr) auto;gap:0;padding:12px 18px 14px}.portfolio-page #home .hero-copy{padding:0 0 8px}.portfolio-page #home .hero-badge{margin-bottom:8px}.portfolio-page #home .hero h1{font-size:clamp(40px,10vw,64px)}.portfolio-page #home .hero h2{margin-top:8px;font-size:clamp(18px,4.5vw,23px)}.portfolio-page #home .hero .intro{margin:8px 0;font-size:12px;line-height:1.4}.portfolio-page #home .portfolio-world.react-atom-scene{height:min(31vh,260px);max-height:none;min-height:0}.portfolio-page #home .hero-stats{margin-top:4px;padding-top:8px}.portfolio-page #home .hero-stats strong{font-size:clamp(13px,3.8vw,16px)}.portfolio-page #home .hero-stats article>span{font-size:8px}}

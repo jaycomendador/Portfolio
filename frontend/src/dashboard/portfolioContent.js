@@ -1,6 +1,6 @@
 export const defaultPortfolioContent = {
-  name: 'Jay', fullName: 'Jay Comendador', role: 'Frontend Developer', experience: '4 Years', projects: '4', clients: '1',
-  intro: 'Building modern, responsive, user-friendly web applications with React.js, React Native, and Tailwind CSS.',
+  name: 'Jay', fullName: 'Jay Comendador', role: 'Freelance Frontend Developer', experience: '4 Years', projects: '4', clients: '1',
+  intro: 'Freelance frontend developer building modern, responsive, user-friendly web applications with React.js, React Native, and Tailwind CSS.',
   about: "I'm a 21-year-old developer from Calbayog City, Samar, and a 4th-year college student taking Bachelor of Science in Information Technology (BSIT) at Northwest Samar State University (NWSSU). I build applications with the MERN stack and AI-assisted tools, focusing on clean UI design, simple and efficient code, and user-friendly experiences.",
   languages: 'JavaScript, React, Node.js, MongoDB, HTML, CSS, PHP, MySQL',
   skillLevels: { JavaScript: 70, React: 70, 'Node.js': 65, MongoDB: 70, HTML: 85, CSS: 80, PHP: 55, MySQL: 80 },
@@ -29,9 +29,13 @@ export function loadPortfolioContent() {
 export function savePortfolioContent(content) { localStorage.setItem('portfolio-content', JSON.stringify(content)); }
 
 function normalizePortfolioAge(content) {
-  return typeof content?.about === 'string'
-    ? { ...content, about: content.about.replace(/\b20-year-old\b/g, '21-year-old') }
-    : content;
+  if (!content || typeof content !== 'object') return content;
+  const role = String(content.role || 'Frontend Developer');
+  return {
+    ...content,
+    role: /freelanc/i.test(role) ? role : `Freelance ${role}`,
+    about: typeof content.about === 'string' ? content.about.replace(/\b20-year-old\b/g, '21-year-old') : content.about,
+  };
 }
 
 export const defaultProjects = [
